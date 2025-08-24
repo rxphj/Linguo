@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DdlMappings">
+    <mapping uuid="44ffa067-f45d-4f61-af2c-2ef31a0a2f6a" name="DDL data source Mapping">
+      <data-sources db="e06acdd1-da83-449a-8eaa-cdd416fe389a" ddl="df41a438-8ecb-4bdf-9cf7-721f4179328c" />
+      <scope>
+        <node kind="database" negative="1" />
+      </scope>
+    </mapping>
+  </component>
+  <component name="SqlDataSourceStorage">
+    <option name="dataSources">
+      <list>
+        <State>
+          <option name="id" value="df41a438-8ecb-4bdf-9cf7-721f4179328c" />
+          <option name="name" value="DDL data source" />
+          <option name="dbmsName" value="UNKNOWN" />
+          <option name="urls">
+            <array />
+          </option>
+        </State>
+      </list>
+    </option>
+  </component>
+</project>

@@ -1,4 +1,4 @@
 package de.bund.idvk.backend.Model;
 
-public class Land {
+public class Admin {
 }

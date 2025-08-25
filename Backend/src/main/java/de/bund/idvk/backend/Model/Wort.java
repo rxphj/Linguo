@@ -1,4 +1,5 @@
 package de.bund.idvk.backend.Model;
 
-public class Stadt {
+public class Wort {
+
 }

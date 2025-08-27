@@ -1,28 +1,32 @@
 package de.bund.idvk.backend.Controller.Verwaltung;
 
-import de.bund.idvk.backend.Model.User;
-import org.flywaydb.core.internal.sqlscript.SqlStatement;
+
+
+import de.bund.idvk.backend.Model.Benutzer;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.sql.*;
 
 @RestController
 @CrossOrigin
 @RequestMapping("/api")
 public class Userverwaltung {
+
     @PostMapping("/create/user")
-    public ResponseEntity<?>createuser(@RequestBody User user) throws SQLException {
-        // Create an encoder with all the defaults
+    public ResponseEntity<?> createuser(@RequestBody Benutzer benutzer)  {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(16);
-        String result = encoder.encode(user.getPassword());
-//        if (encoder.matches("myPassword", result)){
-//            System.out.println(result);
-//        }
-        user.setPassword(result);
-//        SqlStatement sql= DriverManager.getConnection("jdbc:sqlite:identifier.sqlite");
-        return ResponseEntity.ok().body(user);
+        benutzer.setPassword(encoder.encode(benutzer.getPassword()));
+        return ResponseEntity.ok().body(benutzer);
+    }
+
+    @GetMapping("/read/user")
+    public ResponseEntity<?> readuser() throws SQLException {
+        Connection conn = DriverManager.getConnection("jdbc:sqlite:Linguo.sqlite");
+        PreparedStatement ps = conn.prepareStatement("SELECT * FROM users WHERE");
+        ps.execute();
+        ResultSet rs = ps.executeQuery();
+        return ResponseEntity.ok().body(rs);
     }
 }

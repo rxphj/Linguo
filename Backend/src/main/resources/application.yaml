@@ -1,4 +1,6 @@
 spring:
+  security:
+
   session:
     jdbc:
       initialize-schema: always

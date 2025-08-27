@@ -1,5 +1,6 @@
 package de.bund.idvk.backend.Model;
 
+import de.bund.idvk.backend.Model.Enums.Rolle;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

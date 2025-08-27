@@ -1,4 +1,4 @@
-package de.bund.idvk.backend.Controller;
+package de.bund.idvk.backend.Controller.Security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;

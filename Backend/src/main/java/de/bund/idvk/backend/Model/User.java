@@ -14,4 +14,5 @@ public class User {
     private long id;
     private Rolle rolle;
     private String username;
+    private String password;
 }

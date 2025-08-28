@@ -10,12 +10,18 @@ import lombok.Setter;
 @Entity
 public class Benutzer {
 
+
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private Rolle rolle;
     private String username;
     private String password;
+
+    public long getId() {
+        return id;
+    }
 
     public Rolle getRolle() {
         return rolle;

@@ -1,9 +1,14 @@
-import logo from '../assets/logo.png';
 
-export default function Header() {
+
+export default function Header({ adminlogo }) {
   return (
-    <div className="header">
-      <img src={logo} alt="Logo" className="logo" />
-    </div>
+    <header className="header">
+      <div>
+        <img src="/glitter.png" alt="glitterPicture" className="glitter" />
+        {adminlogo && <img src="/admin_logo.png" alt="adminlogo" className="adminlogo" />}
+      </div>
+      <span className="titel">Linguo</span>
+
+    </header>
   );
 }

@@ -1,14 +1,22 @@
+import Header from "../components/Header";
+import Footer from "../components/Footer";
+import Navbar from "../components/Navbar";
+import Content from "../components/Content";
+import ShowPoints from "../components/ShowPoints";
 
-import React, { useState } from "react";
-import { InputMask } from "primereact/inputmask";
 
-export default function BasicDemo() {
-    const [value, setValue] = useState();
+export default function GamePage() {
 
     return (
-        <div className="card flex justify-content-center">
-            <InputMask value={value} onChange={(e) => setValue(e.target.value)} mask="99-999999" placeholder="99-999999"/>
+        <div className="layout">
+             <Header adminlogo={false}/>
+            <Navbar bottomContent="Highscore"/>
+            <Content />
+            <ShowPoints />
+            <Footer />
+
+
         </div>
     )
+
 }
-        

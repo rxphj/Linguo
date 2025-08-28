@@ -1,19 +1,22 @@
-export default function Admin() {  
+import Header from "../components/Header";
+import Footer from "../components/Footer";
+import Navbar from "../components/Navbar";
+import ShowPoints from "../components/ShowPoints";
+import Content from "../components/Content";
 
-return(
-<div className="layout">
-    <header className="header">Ich bin der Header</header>
 
-    <aside className="navbar">
-        <div className="highscore">
-            Highscore
+export default function AdminPage() {
+
+    return (
+        <div className="layout">
+            <Header adminlogo={true}/>
+            <Navbar bottomContent="Highscore"/>
+            <Content />
+            <ShowPoints />
+            <Footer />
+
+
         </div>
-    </aside>
-
-    <main className="content">Game</main>
-    <aside className="rechts">rechts</aside>
-
-</div>
-) 
+    )
 
 }

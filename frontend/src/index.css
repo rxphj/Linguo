@@ -75,12 +75,15 @@ html, body{
   align-items: center;
 }
 
-/*Styling Admin Page, Code von Yasmin*/
+/*Styling Allgemeines Layout, Code von Yasmin*/
 .layout{
   display:grid;
   grid-template-columns: 200px 1fr 150px;
   grid-template-rows: 60px 1fr;
-  grid-template-areas: "header header header" "links content rechts";
+  grid-template-areas:
+  "header header header" 
+  "links content rechts"
+  "footer footer footer";
 
   height: 100vh;
 }
@@ -88,6 +91,14 @@ html, body{
 .header{
   grid-area: header;
   border-bottom: solid;
+  position: relative;
+}
+.footer{
+  grid-area: footer;
+  display: flex;
+  justify-content: center;
+  border-top: solid;
+
 }
 
 .navbar{
@@ -96,9 +107,8 @@ html, body{
   flex-direction: column;
   border-right: solid;
   
-  
 }
-.rechts{
+.points{
   grid-area: rechts;
   border-left: solid;
   
@@ -111,6 +121,21 @@ html, body{
 
 .content{
   grid-area: content;
+}
+
+.glitter{
+  width:auto;
+  height: auto;
+}
+
+.titel{
+  font-size: 35px;
+  font-family:serif;
+}
+
+/* Styling Admin Page Elemente */
+.adminlogo{
+  height: 100px;
 }
 
 /*Styling für Login Page, Code von Yasmin*/
@@ -128,8 +153,7 @@ html, body{
   position: absolute;
   top: 40%;
   left: 50%;
-  transform: translate(-50%);
-  
+  transform: translate(-50%);  
 }
 
 .login-form input{

@@ -5,7 +5,9 @@ return(
   
     <aside className="point-section">
         <div className="points">Punkte</div>
-          {adminAdd && <div className="admin-add">Admin Bereich</div>}
+        <div className="adminsection">
+          {adminAdd && <img src="/Adminsection-img.png" alt="adminsection-img" className="adminsection_img" />}
+          </div>
     </aside>
 
 

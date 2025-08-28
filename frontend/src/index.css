@@ -129,17 +129,20 @@ footer div {
 }
 
 
-.highscore, .admin-add {
+.highscore, .adminsection{
   margin-top: auto;
   background: url('/strich_unten.png') no-repeat center top;
   background-size: 100% 5px;
+  background-position: center -2px;
   height: 45px;
   text-align: center;
 }
 
-.highscore_img {
-  width: 50px;
+
+.highscore_img, .adminsection_img{
+  width: 40px;
   display: inline-block;
+  margin-top: 4px;
 }
 
 .content {
@@ -193,6 +196,7 @@ footer div {
   background-repeat: no-repeat;
   background-position: center;
 }
+
 
 .login-form {
   position: absolute;

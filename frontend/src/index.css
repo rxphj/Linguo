@@ -56,7 +56,8 @@ button:focus-visible {
 
 /*CSS von Yasmin*/
 
-html, body{
+html,
+body {
   height: 100%;
   margin: 0;
   background-color: #f5f2ef;
@@ -70,72 +71,97 @@ html, body{
 }
 
 .logo {
-  max-width: 20%;
-  height: auto;
-  align-items: center;
+  height: 95px;
+
 }
 
 /*Styling Allgemeines Layout, Code von Yasmin*/
-.layout{
-  display:grid;
+.layout {
+  display: grid;
   grid-template-columns: 200px 1fr 150px;
   grid-template-rows: 60px 1fr;
   grid-template-areas:
-  "header header header" 
-  "links content rechts"
-  "footer footer footer";
+    "header header header"
+    "links content rechts"
+    "footer footer footer";
 
   height: 100vh;
 }
 
-.header{
+.header {
   grid-area: header;
+  display: flex;
+  align-items: center;
+  position: relative;
   border-bottom: solid;
   position: relative;
 }
-.footer{
+
+.footer {
   grid-area: footer;
   display: flex;
   justify-content: center;
   border-top: solid;
-
 }
 
-.navbar{
+footer div {
+  font-size: 8px;
+}
+
+.navbar {
   grid-area: links;
   display: flex;
   flex-direction: column;
   border-right: solid;
-  
 }
-.points{
+
+.teilnehmer {
+  font-size: 15px;
+  text-align: center;
+  background: url('/strich_oben.png') no-repeat center bottom;
+  background-size: 100% 8px;
+  height: 25px;
+}
+
+.points {
   grid-area: rechts;
   border-left: solid;
-  
 }
 
-.highscore{
- margin-top: auto;
- border-top: solid;
+.highscore {
+  margin-top: auto;
+  background: url('/strich_unten.png') no-repeat center top;
+  background-size: 100% 5px;
+  height: 45px;
+  text-align: center;
 }
 
-.content{
+.highscore_img {
+  width: 50px;
+  display: inline-block;
+}
+
+.content {
   grid-area: content;
 }
 
-.glitter{
-  width:auto;
-  height: auto;
-}
 
-.titel{
+.titel {
   font-size: 35px;
-  font-family:serif;
+  font-family: serif;
+  position: absolute;
+  top: -21px;
+  left: 350px;
 }
 
 /* Styling Admin Page Elemente */
-.adminlogo{
-  height: 100px;
+.adminlogo {
+  height: 120px;
+  ;
+  position: absolute;
+  top: -31px;
+  ;
+  left: 30px;
 }
 
 /*Styling für Login Page, Code von Yasmin*/
@@ -149,26 +175,27 @@ html, body{
   background-position: center;
 }
 
-.login-form{
+.login-form {
   position: absolute;
   top: 40%;
   left: 50%;
-  transform: translate(-50%);  
+  transform: translate(-50%);
 }
 
-.login-form input{
+.login-form input {
   display: block;
   margin: -5px auto;
   padding: 5px;
   border-radius: 5px;
-  
+
 }
-.login-form Button{
+
+.login-form Button {
   display: block;
   margin: -5px auto 0;
 }
 
-.login-title{
+.login-title {
   text-align: center;
   margin-bottom: 10px;
   font-family: serif;
@@ -194,12 +221,13 @@ html, body{
 }*/
 
 /*Code von Yasmin   responsive design*/
-@media(max-width: 600px){
-  .login-form{
-    top:50%;
+@media(max-width: 600px) {
+  .login-form {
+    top: 50%;
     width: 80%;
   }
-  .AdminPage{
+
+  .AdminPage {
     background-size: contain;
     background-position: top;
   }

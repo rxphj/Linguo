@@ -9,7 +9,7 @@ export default function GamePage() {
 
     return (
         <div className="layout">
-             <Header adminlogo={false}/>
+            <Header adminlogo={false}/>
             <Navbar bottomContent="Highscore"/>
             <Content />
             <ShowPoints />

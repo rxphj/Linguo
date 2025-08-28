@@ -1,12 +1,16 @@
 spring:
+  security:
   session:
     jdbc:
       initialize-schema: always
-  docker:
-    compose:
-      enabled: false
   flyway:
-    enabled: false
+    enabled: true
+    baseline-on-migrate: true
   datasource:
     url: "jdbc:sqlite:Linguo.sqlite"
     driver-class-name: org.sqlite.JDBC
+    hikari:
+      jdbc-url: "jdbc:sqlite:Linguo.sqlite"
+  docker:
+    compose:
+      enabled: false

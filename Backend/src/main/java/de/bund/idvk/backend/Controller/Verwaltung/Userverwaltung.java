@@ -1,28 +1,37 @@
 package de.bund.idvk.backend.Controller.Verwaltung;
 
+import de.bund.idvk.backend.Model.Repository.UserRepository;
 import de.bund.idvk.backend.Model.User;
-import org.flywaydb.core.internal.sqlscript.SqlStatement;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.util.List;
 
 @RestController
 @CrossOrigin
 @RequestMapping("/api")
 public class Userverwaltung {
+
+    @Autowired
+    UserRepository userRepository;
+    //BCrypt für die Verschlüsselung (Hashing) des Passwortes
+    BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(16);
+
+//Gianluca Marotta
     @PostMapping("/create/user")
-    public ResponseEntity<?>createuser(@RequestBody User user) throws SQLException {
-        // Create an encoder with all the defaults
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(16);
+    public ResponseEntity<?>createuser(@RequestBody User user){
         String result = encoder.encode(user.getPassword());
-//        if (encoder.matches("myPassword", result)){
-//            System.out.println(result);
-//        }
         user.setPassword(result);
-//        SqlStatement sql= DriverManager.getConnection("jdbc:sqlite:identifier.sqlite");
-        return ResponseEntity.ok().body(user);
+        return ResponseEntity.ok().body(userRepository.save(user));
+    }
+    @GetMapping("/read/user")
+    public List<User> readuser(){
+        return userRepository.findAll();
+    }
+    @DeleteMapping("/delete/user")
+    public ResponseEntity<?>deleteuser(@RequestBody User user){
+
+        return ResponseEntity.ok().body(//User);
     }
 }

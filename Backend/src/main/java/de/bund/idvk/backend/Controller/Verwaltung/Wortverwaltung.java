@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class Wortverwaltung {
 
-    @GetMapping("/create/wort")
-    public ResponseEntity<?> createWort(){
-
-        return ResponseEntity.ok().body(result);
-    }
+//    @GetMapping("/create/wort")
+//    public ResponseEntity<?> createWort(){
+//
+//        return ResponseEntity.ok().body(result);
+//    }
 }

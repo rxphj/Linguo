@@ -108,14 +108,14 @@ footer div {
   font-size: 8px;
 }
 
-.navbar {
+.navbar, .point-section{
   grid-area: links;
   display: flex;
   flex-direction: column;
   border-right: solid;
 }
 
-.teilnehmer {
+.teilnehmer, .points {
   font-size: 15px;
   text-align: center;
   background: url('/strich_oben.png') no-repeat center bottom;
@@ -123,12 +123,13 @@ footer div {
   height: 25px;
 }
 
-.points {
+.point-section {
   grid-area: rechts;
   border-left: solid;
 }
 
-.highscore {
+
+.highscore, .admin-add {
   margin-top: auto;
   background: url('/strich_unten.png') no-repeat center top;
   background-size: 100% 5px;
@@ -143,8 +144,26 @@ footer div {
 
 .content {
   grid-area: content;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
+.spielfeld {
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+  z-index: 2;
+}
+
+.tool {
+  display: flex;
+  justify-content: center;
+}
+
+.rubrik input {
+  width: 80px;
+}
 
 .titel {
   font-size: 35px;
@@ -152,6 +171,7 @@ footer div {
   position: absolute;
   top: -21px;
   left: 350px;
+  z-index: 1;
 }
 
 /* Styling Admin Page Elemente */
@@ -168,7 +188,6 @@ footer div {
 .LoginPage {
   min-height: 100vh;
   display: flex;
-
   background-image: url('/logoseite_hintergrund.png');
   background-size: cover;
   background-repeat: no-repeat;

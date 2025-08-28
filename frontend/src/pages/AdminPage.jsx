@@ -12,7 +12,7 @@ export default function AdminPage() {
             <Header adminlogo={true}/>
             <Navbar bottomContent="Highscore"/>
             <Content />
-            <ShowPoints />
+            <ShowPoints adminAdd={true}/>
             <Footer />
 
 

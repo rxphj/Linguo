@@ -12,7 +12,7 @@ export default function GamePage() {
             <Header adminlogo={false}/>
             <Navbar bottomContent="Highscore"/>
             <Content />
-            <ShowPoints />
+            <ShowPoints adminAdd={false}/>
             <Footer />
 
 

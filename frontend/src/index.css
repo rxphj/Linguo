@@ -59,6 +59,7 @@ button:focus-visible {
 html, body{
   height: 100%;
   margin: 0;
+  background-color: #f5f2ef;
 }
 
 
@@ -74,6 +75,43 @@ html, body{
   align-items: center;
 }
 
+/*Styling Admin Page, Code von Yasmin*/
+.layout{
+  display:grid;
+  grid-template-columns: 200px 1fr 150px;
+  grid-template-rows: 60px 1fr;
+  grid-template-areas: "header header header" "links content rechts";
+
+  height: 100vh;
+}
+
+.header{
+  grid-area: header;
+  border-bottom: solid;
+}
+
+.navbar{
+  grid-area: links;
+  display: flex;
+  flex-direction: column;
+  border-right: solid;
+  
+  
+}
+.rechts{
+  grid-area: rechts;
+  border-left: solid;
+  
+}
+
+.highscore{
+ margin-top: auto;
+ border-top: solid;
+}
+
+.content{
+  grid-area: content;
+}
 
 /*Styling für Login Page, Code von Yasmin*/
 .LoginPage {
@@ -136,5 +174,9 @@ html, body{
   .login-form{
     top:50%;
     width: 80%;
+  }
+  .AdminPage{
+    background-size: contain;
+    background-position: top;
   }
 }

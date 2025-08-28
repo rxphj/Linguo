@@ -1,0 +1,12 @@
+spring:
+  session:
+    jdbc:
+      initialize-schema: always
+  docker:
+    compose:
+      enabled: false
+  flyway:
+    enabled: false
+  datasource:
+    url: "jdbc:sqlite:Linguo.sqlite"
+    driver-class-name: org.sqlite.JDBC

@@ -1,7 +1,7 @@
 package de.bund.idvk.backend.Controller.Verwaltung;
 
 import de.bund.idvk.backend.Model.Repository.UserRepository;
-import de.bund.idvk.backend.Model.User;
+import de.bund.idvk.backend.Model.Benutzer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -20,18 +20,24 @@ public class Userverwaltung {
 
 //Gianluca Marotta
     @PostMapping("/create/user")
-    public ResponseEntity<?>createuser(@RequestBody User user){
-        String result = encoder.encode(user.getPassword());
-        user.setPassword(result);
-        return ResponseEntity.ok().body(userRepository.save(user));
+    public ResponseEntity<?>createuser(@RequestBody Benutzer benutzer){
+        benutzer.setPassword(encoder.encode(benutzer.getPassword()));
+        return ResponseEntity.ok().body(userRepository.save(benutzer));
     }
     @GetMapping("/read/user")
-    public List<User> readuser(){
+    public List<Benutzer> readuser(){
         return userRepository.findAll();
     }
     @DeleteMapping("/delete/user")
-    public ResponseEntity<?>deleteuser(@RequestBody User user){
-
-        return ResponseEntity.ok().body(//User);
+    public ResponseEntity<Boolean>deleteuser(@RequestBody Benutzer benutzer){
+        return ResponseEntity.ok().body(userRepository.delete(benutzer));
+    }
+    @PutMapping("/update/user")
+    public ResponseEntity<?>updateuser(@RequestBody Benutzer benutzer){
+        return ResponseEntity.ok().body(userRepository.update(benutzer));
+    }
+    @GetMapping("/read/user/by/object/{benutzer}")
+    public ResponseEntity<Benutzer> readuserbyid(@PathVariable Benutzer benutzer){
+        return ResponseEntity.ok().body(userRepository.findByObject(benutzer));
     }
 }

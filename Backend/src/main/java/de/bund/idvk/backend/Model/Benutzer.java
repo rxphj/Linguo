@@ -7,14 +7,29 @@ import jakarta.persistence.*;
 @Table
 @Entity
 
-public class User {
+public class Benutzer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private Rolle rolle;
     private String username;
     private String password;
+    private int score;
 
+    public long getId() {
+        return id;
+    }
+
+    public void setScore(int score){
+        this.score = score;
+    }
+    public void getScore(int score){
+        this.score = score;
+    }
+
+    public int getScore(){
+        return score;
+    }
     public Rolle getRolle() {
         return rolle;
     }

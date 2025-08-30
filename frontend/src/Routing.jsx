@@ -8,9 +8,21 @@ import AdminPage from './pages/AdminPage';
 export default function Routing() {
 
 
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    /*const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-    return isLoggedIn ? <AdminPage /> : <LoginPage onLoginSuccess={() => setIsLoggedIn(true)} />
+    return isLoggedIn ? <GamePage /> : <LoginPage onLoginSuccess={() => setIsLoggedIn(true)} />*/
 
+    const [user, setUser] = useState(null);
+
+    const handleLoginSuccess = (userData) => {
+        setUser(userData);
+    };
+
+    if(!user){
+        return <LoginPage onLoginSuccess={handleLoginSuccess} />;
+    }
+
+    if (user.role === 'admin') return <AdminPage />;
+    return <GamePage />;
 
 }

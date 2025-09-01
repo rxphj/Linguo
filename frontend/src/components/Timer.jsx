@@ -1,6 +1,7 @@
 
-        import { ProgressBar } from 'primereact/progressbar';
+import { ProgressBar } from 'primereact/progressbar';
 import { useEffect } from 'react';
+import { useState } from "react";
 
 
 export default function RoundTimer() {
@@ -18,8 +19,12 @@ export default function RoundTimer() {
 
   return (
     <div>
-      <h3>Noch {timeLeft} Sekunden</h3>
-      <ProgressBar value={(timeLeft / 60) * 100} />
+      <p visible = "false">Noch {timeLeft} Sekunden</p>
+      <ProgressBar  
+      value={(timeLeft / 60) * 100}
+      showValue={false}
+      //displayValueTemplate={() => `${timeLeft} Sekunden`}
+      />
     </div>
   );
 }

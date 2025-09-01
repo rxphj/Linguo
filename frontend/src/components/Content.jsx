@@ -1,6 +1,7 @@
 import { useState } from "react";
 import CurrentLetter from "./CurrentLetter";
 import Timer from "./Timer";
+import Voting from "./voting";
 
 export default function Content() {
 
@@ -23,10 +24,10 @@ export default function Content() {
 
         <main className="content">
             <div className="tool">
-                Aktueller Buchstabe :
+                Aktueller Buchstabe : <CurrentLetter />
             </div>
 
-            <div className="tool"> timer</div>
+            <div className="tool"> <Timer/></div>
 
             <form className="spielfeld">
 
@@ -53,6 +54,8 @@ export default function Content() {
                 </button>
 
             </form>
+
+              <Voting />
         </main>
 
     )

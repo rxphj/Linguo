@@ -2,38 +2,47 @@ import { addWord, deleteWord, addUser, deleteUser } from '../api/rest';
 import { Dialog } from 'primereact/dialog';
 import { useState } from 'react';
 
+//Prop übergabe visibile (anzeigen des Dialogs und onHide um Dialog zu verbergen)
 export default function AdminVerwaltung( {visible, onHide}) {
 
-
+    //neues Wort anlegen
     const [newWord, setNewWord] = useState('');
+    //neuer Benutzer anlegen
     const [newUser, setNewUser] = useState('');
-    const [deleteWord, setDeleteWord] = useState('');
-    const [deleteUser, setDeleteUser] = useState('');
+    //Wort löschen
+    const [wordToDelete, setWordToDelete] = useState('');
+    //Benutzer löschen
+    const [userToDelete, setUsertoDelete] = useState('');
 
+    //neues Wort anlegen (handling)
     const handleNewWord = async () => {
         if (!newWord) return;
         await addWord(newWord);
         setNewWord('');
     };
 
+    //Löschen eines Wortes(handling)
     const handleDeleteWord = async () => {
-        if (!deleteWord) return;
-        await deleteWord(deleteWord);
+        if (!wordToDelete) return;
+        await deleteWord(wordToDelete);
         setDeleteWord('');
     };
 
+    //neuen User anlegen (handling)
     const handleNewUser = async () => {
         if (!newUser) return;
         await addUser(newUser);
         setNewUser('');
     };
 
+    //User Löschen(handling)
     const handleDeleteUser = async () => {
-        if (!deleteUser) return;
-        await deleteUser(deleteUser);
+        if (!userToDelete) return;
+        await deleteUser(userToDelete);
         setDeleteUser('');
     };
 
+    //rendert das Dialogfenster
     return (
         <Dialog
             header="Admin Bereich"

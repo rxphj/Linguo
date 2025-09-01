@@ -8,6 +8,14 @@ export async function login(username, password) {
   });
 }
 
+//axios.get("localhost:8080/api/xxx/xxx").then(res =>{if(res.data===true){wortnichtvohanden= true})
+
+  //  axios.delete("http://localhost:8080/api/delete/wort" + {name="yasmin"}).then(res => {}).catch()
+
+    
+
+
+
 // Wörter
 export const addWord = async (word) => {
     const res = await fetch('/api/words/add', {

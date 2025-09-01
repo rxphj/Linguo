@@ -18,10 +18,10 @@ export default function Voting() {
     }
 
     return (
-        <div>
+        <div >
 
-            <p>{wordForPoll} als gültig akzeptieren?</p>
-            <div >
+            <p className='poll'>{wordForPoll} als gültig akzeptieren?</p>
+            <div className='radioButton'>
                 <RadioButton
                     inputId="yes"
                     name="vote"

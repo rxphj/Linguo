@@ -23,11 +23,13 @@ export default function Content() {
     return (
 
         <main className="content">
-            <div className="tool">
-                Aktueller Buchstabe : <CurrentLetter />
-            </div>
+            <div className="toolBox">
+                <div className="toolLetter">
+                    Aktueller Buchstabe : <CurrentLetter />
+                </div>
 
-            <div className="tool"> <Timer/></div>
+                <div className="toolTimer"> <Timer /></div>
+            </div>
 
             <form className="spielfeld">
 
@@ -55,7 +57,7 @@ export default function Content() {
 
             </form>
 
-              <Voting />
+            <Voting />
         </main>
 
     )

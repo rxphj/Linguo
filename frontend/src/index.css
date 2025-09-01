@@ -6,19 +6,20 @@ body {
 }
 
 .logo {
-  max-height: 100%; 
+  max-height: 100%;
   width: auto;
 }
+
 /* Allgemeines Layout */
 .layout {
   display: grid;
   grid-template-columns: 20% 1fr 20%;
-  grid-template-rows: clamp(80px, 12vh, 200px) 1fr auto; 
+  grid-template-rows: clamp(80px, 12vh, 200px) 1fr auto;
   grid-template-areas:
     "header header header"
     "links content rechts"
     "footer footer footer";
-  height: 100dvh; 
+  height: 100dvh;
   overflow: hidden;
 }
 
@@ -26,9 +27,21 @@ body {
 .header {
   grid-area: header;
   display: flex;
-  border-bottom: solid 1px #000;
   position: relative;
+  justify-content: space-between;
 }
+
+.header .center {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  transform: translateX(-50%);
+}
+
+.header .logo {
+  max-height: clamp(150px, 10vh, 200px);
+}
+
 
 .titel {
   font-size: clamp(1.2rem, 3vw, 2.5rem);
@@ -44,7 +57,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  border-top: solid 1px #000;
+  border-top: solid;
 }
 
 footer div {
@@ -57,7 +70,8 @@ footer div {
   display: flex;
   flex-direction: column;
   border-right: solid 1px #000;
-  padding-top: 1rem; /* verschiebt Inhalte nach unten */
+  border-top: solid 1px #000;
+  padding-top: 1rem;
 }
 
 .point-section {
@@ -87,7 +101,7 @@ footer div {
 
 .highscore_img,
 .adminsection_img {
-  width: clamp(30px, 10%, 60px);
+  width: clamp(50px, 10%, 100px);
   margin-top: 1vh;
   cursor: pointer;
 }
@@ -96,19 +110,45 @@ footer div {
   grid-area: content;
   display: flex;
   flex-direction: column;
+  justify-content: center;
   gap: 1rem;
   padding: 1rem;
   overflow: auto;
+  border-left: solid;
+  border-right: solid;
 }
 
 .spielfeld {
   display: flex;
+  flex-direction: row;
   justify-content: center;
-  gap: 0.5rem;
+  padding: 0.5rem;
   z-index: 2;
+  border: 3px solid #817777;
 }
 
-.tool {
+.toolLetter, .toolTimer {
+  display: flex;
+  align-items: center;
+  
+}
+
+.toolBox {
+  display: flex;
+  border-style: solid;
+  justify-content: space-evenly;
+  border: 3px solid #817777;
+  border-top: none;
+  border-radius: 100%;
+  padding: 0.8rem;
+}
+
+.poll{
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.radioButton{
   display: flex;
   justify-content: center;
 }
@@ -120,10 +160,10 @@ footer div {
 }
 
 .adminlogo {
-  max-height: clamp(80px, 30vh, 200px);
+  max-height: clamp(50px, 20vh, 100px);
   position: absolute;
-  top: -5vh;
-  left: 2vh;
+  top: 0vh;
+  left: 5vh;
 }
 
 .LoginPage {
@@ -200,7 +240,39 @@ footer div {
     left: 5vw;
   }
 
-  .adminlogo{
+  .adminlogo {
     display: none;
   }
+   .header .logo {
+    max-height: clamp(100px, 10vh, 120px);
+  }
+}
+
+/* Große Bildschirme*/
+@media (min-width: 1200px) {
+  .header .center {
+    position: absolute;
+    left: 50%;
+    top: -30%;
+    transform: translateX(-50%);
+  }
+
+  .header .logo {
+    max-height: clamp(400px, 25vh, 800px);
+  }
+
+  .highscore_img,
+  .adminsection_img {
+    width: clamp(80px, 10%, 150px);
+    margin-top: 1vh;
+    cursor: pointer;
+  }
+
+  .adminlogo {
+  max-height: clamp(80px, 30vh, 200px);
+  position: absolute;
+  top: -6vh;
+  left: 8vh;
+}
+
 }

@@ -3,7 +3,7 @@ import { Dialog } from 'primereact/dialog';
 import { useState } from 'react';
 
 //Prop übergabe visibile (anzeigen des Dialogs und onHide um Dialog zu verbergen)
-export default function AdminVerwaltung( {visible, onHide}) {
+export default function AdminVerwaltung( {visible, onHide} ) {
 
     //neues Wort anlegen
     const [newWord, setNewWord] = useState('');

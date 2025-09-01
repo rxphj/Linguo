@@ -10,7 +10,7 @@ export default function GamePage() {
     return (
         <div className="layout">
             <Header adminlogo={false}/>
-            <Navbar bottomContent=""/>
+            <Navbar bottomContent="Highscore"/>
             <Content />
             <ShowPoints adminAdd={false}/>
             <Footer />

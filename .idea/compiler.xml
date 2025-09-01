@@ -2,6 +2,9 @@
 <project version="4">
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="Backend" options="-parameters" />
+      <module name="Backend.main" options="-parameters" />
+      <module name="Backend.test" options="-parameters" />
       <module name="Server" options="-parameters" />
       <module name="Server.main" options="-parameters" />
       <module name="Server.test" options="-parameters" />

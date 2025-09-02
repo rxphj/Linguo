@@ -22,6 +22,8 @@ export default function Content() {
         console.log("Abgeschickt:", { Stadt, Land, Fluss, Tier });
     };
 
+
+
     return (
 
         <main className="content">

@@ -1,4 +1,6 @@
 import axios from "axios";
+import Timer from "./Timer";
+import { useState } from "react";  
 
 export default function CurrentLetter(){
     
@@ -8,6 +10,14 @@ export default function CurrentLetter(){
     return letter[randomLetter]; //0-25*/
 
     //Buchstabe aus dem Backend ziehen
+
+
+    const [letter, setLetter] = useState("");
+
+    const handleTimerState = (isPause) => {
+
+        if(isPause === false) {
+      
    axios.get("http://localhost:8080/api/get/letter").then((res) => {
 
     const letter = res.data; 
@@ -16,9 +26,12 @@ export default function CurrentLetter(){
   })
   .catch((error) => {
     console.error("Fehler beim Abrufen des Buchstabens:", error);
-  })
-
-  const letter = "B";
-  return letter;
+  }, [isPause])
+}
 
 }
+return <>{letter || "-"}</>;
+}
+
+
+  

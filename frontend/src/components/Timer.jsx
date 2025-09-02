@@ -1,29 +1,50 @@
-
 import { ProgressBar } from 'primereact/progressbar';
-import { useEffect } from 'react';
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import CurrentLetter from './CurrentLetter';
+import axios from "axios";
 
-
-export default function RoundTimer() {
+export default function Timer({onTimerState}) {
   const [timeLeft, setTimeLeft] = useState(60);
-
+  const [isPause, setIsPause] = useState(false);
+  
   useEffect(() => {
-    if (timeLeft <= 0) return;
-
     const interval = setInterval(() => {
-      setTimeLeft((t) => t - 1);
+      setTimeLeft(t => t - 1);
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [timeLeft]);
+  }, []);
 
+  useEffect(() => {
+    if (timeLeft <= 0) {
+      if (!isPause) {
+        // Pause starten
+        setIsPause(true);
+        setTimeLeft(30);
+      } else {
+        setIsPause(false);
+        setTimeLeft(60);
+
+        if(onTimerState){
+          onTimerState(false);
+        }
+
+      }
+    }
+  }, [timeLeft, isPause]);
+    useEffect(() => {
+    if (onTimerState) {
+      onTimerState(isPause);
+    }
+  }, [isPause, onTimerState]);
+
+ 
   return (
     <div>
-      <p visible = "false">Noch {timeLeft} Sekunden</p>
-      <ProgressBar  
-      value={(timeLeft / 60) * 100}
-      showValue={false}
-      //displayValueTemplate={() => `${timeLeft} Sekunden`}
+      <p>{isPause ? "Pause: " : "Aktuelle Runde läuft: "} {timeLeft} Sekunden</p>
+      <ProgressBar
+        value={isPause ? (timeLeft / 30) * 100 : (timeLeft / 60) * 100}
+        showValue={false}
       />
     </div>
   );

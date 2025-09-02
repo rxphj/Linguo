@@ -8,7 +8,9 @@ export default function AdminVerwaltung( {visible, onHide} ) {
     //neues Wort anlegen
     const [newWord, setNewWord] = useState('');
     //neuer Benutzer anlegen
-    const [newUser, setNewUser] = useState('');
+    const [newUserName, setUserName] = useState('');
+    const [userPassword, setUserPassword] = useState('');
+    const [userRole, setUserRole] = useState('');
     //Wort löschen
     const [wordToDelete, setWordToDelete] = useState('');
     //Benutzer löschen
@@ -32,7 +34,9 @@ export default function AdminVerwaltung( {visible, onHide} ) {
     const handleNewUser = async () => {
         if (!newUser) return;
         await addUser(newUser);
-        setNewUser('');
+        setUserName('');
+        setUserPassword('');
+        setUserRole('');
     };
 
     //User Löschen(handling)
@@ -56,18 +60,20 @@ export default function AdminVerwaltung( {visible, onHide} ) {
                 < button onClick={handleNewWord} > Wort anlegen </button>
             </div>
             <div>
-                <label>Benutzer anlegen </label>
-                < input type="text" value={newUser} onChange={(e) => setNewUser(e.target.value)} />
+                <label>Benutzer anlegen:</label>
+                < input type="text" placeholder='Benutzername' value={newUserName} onChange={(e) => setNewUser(e.target.value)} />
+                < input type="text" placeholder='Passwort' value={userPassword} onChange={(e) => setNewUser(e.target.value)} />
+                < input type="text" placeholder='Rolle' value={userRole} onChange={(e) => setNewUser(e.target.value)} />
                 < button onClick={handleNewUser} > Benutzer anlegen </button>
             </div>
             <div>
                 <label>Wort löschen </label>
-                < input type="text" value={deleteWord} onChange={(e) => setDeleteWord(e.target.value)} />
+                < input type="text" value={deleteWord} onChange={(e) => setWordToDelete(e.target.value)} />
                 < button onClick={handleDeleteWord} > Wort löschen </button>
             </div>
             <div>
                 <label>Benutzer löschen </label>
-                < input type="text" value={deleteUser} onChange={(e) => setDeleteUser(e.target.value)} />
+                < input type="text" value={deleteUser} onChange={(e) => setUsertoDelete(e.target.value)} />
                 < button onClick={handleDeleteUser} > Benutzer löschen </button>
             </div>
         </Dialog>

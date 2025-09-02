@@ -25,7 +25,7 @@ const handleLogin= async () => {
   return (
       <div className='LoginPage'>
       <div className="login-form">
-        <h1 className='login-title'>Log dich zum spielen ein!</h1>
+        <h1 className='login-title'>Log dich zum Spielen ein!</h1>
         <input placeholder="Benutzername" value={username} onChange={(e) => setUsername(e.target.value)}/> <br />
         <input placeholder="Passwort" type="password" value={password} onChange={(e) => setPassword(e.target.value)}/> <br />
         <Button onClick={handleLogin}>Login</Button>

@@ -8,7 +8,7 @@ export default function Voting() {
     const [voted, setVoted] = useState(false);
     const [vote, setVote] = useState("");
 
-    const wordForPoll = "AbstimmungsWort";
+    const wordForPoll = "DiesIstEinTestWort";
 
     const takeVote = (value) => {
 
@@ -21,7 +21,7 @@ export default function Voting() {
         <div >
 
             <p className='poll'>{wordForPoll} als gültig akzeptieren?</p>
-            <div className='radioButton'>
+            <div className='radioButtonJa'>
                 <RadioButton
                     inputId="yes"
                     name="vote"
@@ -29,7 +29,7 @@ export default function Voting() {
                     onChange={(e) => takeVote("yes")}
                     checked={vote === "yes"}
                 />
-                <label htmlFor="yes">Yes</label>
+                <label htmlFor="yes">Ja</label>
                 <RadioButton
                     inputId="no"
                     name="vote"
@@ -37,7 +37,7 @@ export default function Voting() {
                     onChange={(e) => takeVote("no")}
                     checked={vote === "no"}
                 />
-                <label htmlFor="no">No</label>
+                <label htmlFor="no">Nein</label>
                 {vote && <p>Du hast abgestimmt: {vote === "yes" ? "Yes ✅" : "No ❌"}</p>}
             </div>
 

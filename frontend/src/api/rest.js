@@ -1,3 +1,4 @@
+import axios from "axios";
 export async function login(username, password) {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
@@ -10,7 +11,8 @@ export async function login(username, password) {
 
 //axios.get("localhost:8080/api/xxx/xxx").then(res =>{if(res.data===true){wortnichtvohanden= true})
 
-  //  axios.delete("http://localhost:8080/api/delete/wort" + {name="yasmin"}).then(res => {}).catch()
+  axios.delete("http://localhost:8080/api/delete/wort" + {name: "yasmin"}).then(res => {}).catch()
+  //axios.get("htttp://localhost:8080/ws/get/letter").then(res => {if(res.data === true)})
 
     
 

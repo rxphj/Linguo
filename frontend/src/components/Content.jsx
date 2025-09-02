@@ -53,13 +53,13 @@ export default function Content() {
                     <InputText type="text" name="Tier" placeholder="Tier" value={Tier} onChange={(e) => setTier(e.target.value)} disabled={locked} />
                 </div>
 
-                <Button type="submit" onClick={handleSubmit} disabled={locked}>
+                <button type="submit" onClick={handleSubmit} disabled={locked}>
                     Abschicken
-                </Button>
+                </button>
 
             </form>
 
-            <Voting />
+           {/* <Voting />*/}
         </main>
 
     )

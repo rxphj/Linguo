@@ -252,10 +252,52 @@ footer div {
     display: none;
   }
 
-  .header img {
-    display: none;
+  .header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1vh;
+    padding-top: 2vh;
   }
-    .adminview > div {
+
+  .header .logo {
+    max-height: clamp(50px, 10vh, 100px);
+    width: auto;
+  }
+
+  .header .center {
+    position: relative;
+    top: 0;
+    left: 0;
+    transform: none;
+    font-size: clamp(0.8rem, 4vw, 1.2rem);
+    text-align: center;
+  }
+
+  .spielfeld {
+    flex-direction: column;
+    align-items: center;
+    gap: 1vh;
+    width: 90%;
+    margin: 0 auto;
+  }
+
+  .rubrik {
+    width: 100%;
+    max-width: 250px;
+  }
+
+  .rubrik .p-inputtext {
+    width: 100%;
+  }
+
+  .spielfeld .p-button {
+    width: 100%;
+    max-width: 200px;
+    font-size: 1rem;
+  }
+
+  .adminview > div {
     flex-direction: column;
     align-items: stretch;
   }
@@ -264,43 +306,69 @@ footer div {
   .adminview .p-button {
     width: 100%;
   }
-  
 }
 
 /* Querformat*/
-@media (orientation: landscape) and (max-height: 500px) {
+@media (max-width: 600px) and (orientation: landscape) {
   .layout {
     grid-template-columns: 15% 1fr 15%;
-    grid-template-rows: 10dvh 1fr 8dvh;
+    grid-template-rows: 10vh 1fr 8vh;
   }
 
-  .logo {
-    max-height: 12dvh;
+  .header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1vh;
+    padding-top: 1vh;
   }
 
-  .titel {
-    font-size: clamp(1rem, 2vh, 2rem);
-    left: 5vw;
+  .header .logo {
+    max-height: clamp(40px, 10vh, 80px);
   }
 
-  .adminlogo {
-    display: none;
+  .header .center {
+    position: relative;
+    top: 0;
+    left: 0;
+    transform: none;
+    font-size: clamp(0.7rem, 3vw, 1rem);
+    text-align: center;
   }
-   .header .logo {
-    max-height: clamp(100px, 10vh, 120px);
+
+  .spielfeld {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 95%;
+    margin: 0 auto;
+  }
+
+  .rubrik {
+    width: clamp(100px, 20vw, 120px);
+  }
+
+  .rubrik .p-inputtext {
+    width: 100%;
+  }
+
+  .spielfeld .p-button {
+    width: clamp(80px, 20vw, 120px);
+    font-size: clamp(0.75rem, 2vw, 0.9rem);
+  }
+
+  .adminview > div {
+    flex-direction: column;
+    align-items: center;
   }
 
   .adminview .p-inputtext,
   .adminview .p-button {
-    width: 100%; 
-  }
-  
-  .adminview > div {
-    flex-direction: column;
-    align-items: stretch;
+    width: 80%;
+    font-size: 0.8rem;
   }
 }
-
 /* Große Bildschirme*/
 @media (min-width: 1200px) {
   .header .center {

@@ -3,6 +3,8 @@ body {
   height: 100%;
   margin: 0;
   background-color: #f5f2ef;
+  font-family: Quicksand;
+  font-size: x-large;
 }
 
 .logo {
@@ -253,6 +255,16 @@ footer div {
   .header img {
     display: none;
   }
+    .adminview > div {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .adminview .p-inputtext,
+  .adminview .p-button {
+    width: 100%;
+  }
+  
 }
 
 /* Querformat*/
@@ -276,6 +288,16 @@ footer div {
   }
    .header .logo {
     max-height: clamp(100px, 10vh, 120px);
+  }
+
+  .adminview .p-inputtext,
+  .adminview .p-button {
+    width: 100%; 
+  }
+  
+  .adminview > div {
+    flex-direction: column;
+    align-items: stretch;
   }
 }
 

@@ -33,6 +33,16 @@ body {
   justify-content: space-between;
 }
 
+.rechts button {
+  height: 40px;         
+  min-width: 120px;     
+  padding: 0 1rem;      
+  font-size: 1.2rem;    
+  border-radius: 8px;   
+ transform: translate(-30px, 30px);
+}
+
+
 .header .center {
   position: absolute;
   left: 50%;
@@ -235,8 +245,18 @@ footer div {
 }
 
 
-/* Hochformat*/
+/* Hochformat Handy */
 @media (max-width: 600px) and (orientation: portrait) {
+
+
+  .rechts button {
+    width: 80%;
+    height: clamp(35px, 6vh, 45px);
+    font-size: clamp(0.8rem, 3vw, 1rem);
+    transform: none; /* bessere Position auf Handy */
+    margin: 0.5rem auto; /* zentriert */
+  }
+  
   .layout {
     grid-template-columns: 1fr;
     grid-template-rows: auto auto 1fr auto auto;
@@ -310,6 +330,14 @@ footer div {
 
 /* Querformat*/
 @media (max-width: 600px) and (orientation: landscape) {
+
+  .rechts button {
+    width: clamp(120px, 20vw, 140px);
+    height: clamp(35px, 5vh, 45px);
+    font-size: clamp(0.8rem, 2vw, 1rem);
+    transform: none;
+  }
+
   .layout {
     grid-template-columns: 15% 1fr 15%;
     grid-template-rows: 10vh 1fr 8vh;

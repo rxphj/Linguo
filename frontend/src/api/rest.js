@@ -1,3 +1,5 @@
+import axios from "axios";
+
 export async function login(username, password) {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
@@ -26,6 +28,8 @@ export const deleteWord = async (word) => {
     });
     return res.json();
 }
+
+axios.get("http://localhost:8080/api/read/user")
 
 // User
 export const addUser = async (user) => {

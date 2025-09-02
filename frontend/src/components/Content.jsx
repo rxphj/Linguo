@@ -2,6 +2,8 @@ import { useState } from "react";
 import CurrentLetter from "./CurrentLetter";
 import Timer from "./Timer";
 import Voting from "./voting";
+import { InputText } from "primereact/inputtext";
+import { Button } from 'primereact/button';
 
 export default function Content() {
 
@@ -35,25 +37,25 @@ export default function Content() {
 
                 <div className="rubrik">
                     <label>Stadt</label><br />
-                    <input type="text" name="Stadt" placeholder="Stadt" value={Stadt} onChange={(e) => setStadt(e.target.value)} disabled={locked} />
+                    <InputText type="text" name="Stadt" placeholder="Stadt" value={Stadt} onChange={(e) => setStadt(e.target.value)} disabled={locked} />
                 </div>
 
                 <div className="rubrik">
                     <label>Land</label><br />
-                    <input type="text" name="Land" placeholder="Land" value={Land} onChange={(e) => setLand(e.target.value)} disabled={locked} />
+                    <InputText type="text" name="Land" placeholder="Land" value={Land} onChange={(e) => setLand(e.target.value)} disabled={locked} />
                 </div>
                 <div className="rubrik">
                     <label>Fluss</label><br />
-                    <input type="text" name="Stadt" placeholder="Fluss" value={Fluss} onChange={(e) => setFluss(e.target.value)} disabled={locked} />
+                    <InputText type="text" name="Stadt" placeholder="Fluss" value={Fluss} onChange={(e) => setFluss(e.target.value)} disabled={locked} />
                 </div>
                 <div className="rubrik">
                     <label>Tier</label><br />
-                    <input type="text" name="Tier" placeholder="Tier" value={Tier} onChange={(e) => setTier(e.target.value)} disabled={locked} />
+                    <InputText type="text" name="Tier" placeholder="Tier" value={Tier} onChange={(e) => setTier(e.target.value)} disabled={locked} />
                 </div>
 
-                <button type="submit" onClick={handleSubmit} disabled={locked}>
+                <Button type="submit" onClick={handleSubmit} disabled={locked}>
                     Abschicken
-                </button>
+                </Button>
 
             </form>
 

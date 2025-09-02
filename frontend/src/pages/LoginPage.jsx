@@ -2,6 +2,7 @@
 import { Button } from 'primereact/button';
 import { useState } from 'react';
 import { login } from '../api/rest';
+import { InputText } from 'primereact/inputtext';
 
 export default function LoginPage({onLoginSuccess}) {
 
@@ -26,8 +27,8 @@ const handleLogin= async () => {
       <div className='LoginPage'>
       <div className="login-form">
         <h1 className='login-title'>Log dich zum Spielen ein!</h1>
-        <input placeholder="Benutzername" value={username} onChange={(e) => setUsername(e.target.value)}/> <br />
-        <input placeholder="Passwort" type="password" value={password} onChange={(e) => setPassword(e.target.value)}/> <br />
+        <InputText placeholder="Benutzername" value={username} onChange={(e) => setUsername(e.target.value)}/> <br />
+        <InputText placeholder="Passwort" type="password" value={password} onChange={(e) => setPassword(e.target.value)}/> <br />
         <Button onClick={handleLogin}>Login</Button>
         {error && <p style={{ color: 'red'}}>{error}</p>}
       </div>

@@ -105,6 +105,31 @@ footer div {
   margin-top: 1vh;
   cursor: pointer;
 }
+.admin-dialog {
+  width: 60vw;
+  max-width: 800px;
+}
+
+.adminview{
+  display:grid;
+  gap: 1.5rem;
+  padding: 1rem;
+}
+
+.adminview > div{
+  display:flex;
+  flex-direction: column;
+  gap:0.5rem;
+  align-items: center;
+}
+.p-inputtext{
+  width: 50%;
+  padding: 0.3rem 0.5rem;
+  font-size:0.9rem;
+}
+.p-button{
+  width: 30%;
+}
 
 .content {
   grid-area: content;
@@ -159,6 +184,10 @@ footer div {
   width: 60%;
   height: auto;
   padding: 0.3rem;
+  font-size: large;
+}
+.rubrik{
+  font-size: xx-large;
 }
 
 .adminlogo {
@@ -273,7 +302,7 @@ footer div {
   .adminlogo {
   max-height: clamp(75px, 30vh, 200px);
   position: absolute;
-  top: -8vh;
+  top: -5vh;
   left: 8vh;
 }
 

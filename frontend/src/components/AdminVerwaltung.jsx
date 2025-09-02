@@ -1,9 +1,11 @@
 import { addWord, deleteWord, addUser, deleteUser } from '../api/rest';
 import { Dialog } from 'primereact/dialog';
 import { useState } from 'react';
+import { InputText } from 'primereact/inputtext';
+import { Button } from 'primereact/button';
 
 //Prop übergabe visibile (anzeigen des Dialogs und onHide um Dialog zu verbergen)
-export default function AdminVerwaltung( {visible, onHide} ) {
+export default function AdminVerwaltung({ visible, onHide }) {
 
     //neues Wort anlegen
     const [newWord, setNewWord] = useState('');
@@ -32,8 +34,8 @@ export default function AdminVerwaltung( {visible, onHide} ) {
 
     //neuen User anlegen (handling)
     const handleNewUser = async () => {
-        if (!newUser) return;
-        await addUser(newUser);
+        if (!newUserName || !userPassword || !userRole) return;
+        await addUser({ username: newUserName, password: userPassword, role: userRole });
         setUserName('');
         setUserPassword('');
         setUserRole('');
@@ -51,30 +53,32 @@ export default function AdminVerwaltung( {visible, onHide} ) {
         <Dialog
             header="Admin Bereich"
             visible={visible}
-            style={{ width: '50vw' }}
+            className='admin-dialog'
             onHide={onHide}
         >
-            <div>
-                <label>Wort anlegen </label>
-                < input type="text" value={newWord} onChange={(e) => setNewWord(e.target.value)} />
-                < button onClick={handleNewWord} > Wort anlegen </button>
-            </div>
-            <div>
-                <label>Benutzer anlegen:</label>
-                < input type="text" placeholder='Benutzername' value={newUserName} onChange={(e) => setNewUser(e.target.value)} />
-                < input type="text" placeholder='Passwort' value={userPassword} onChange={(e) => setNewUser(e.target.value)} />
-                < input type="text" placeholder='Rolle' value={userRole} onChange={(e) => setNewUser(e.target.value)} />
-                < button onClick={handleNewUser} > Benutzer anlegen </button>
-            </div>
-            <div>
-                <label>Wort löschen </label>
-                < input type="text" value={deleteWord} onChange={(e) => setWordToDelete(e.target.value)} />
-                < button onClick={handleDeleteWord} > Wort löschen </button>
-            </div>
-            <div>
-                <label>Benutzer löschen </label>
-                < input type="text" value={deleteUser} onChange={(e) => setUsertoDelete(e.target.value)} />
-                < button onClick={handleDeleteUser} > Benutzer löschen </button>
+            <div className='adminview'>
+                <div>
+                    <label>Wort anlegen </label>
+                    < InputText type="text" value={newWord} onChange={(e) => setNewWord(e.target.value)} />
+                    < Button onClick={handleNewWord} > Wort anlegen </Button>
+                </div>
+                <div>
+                    <label>Benutzer anlegen:</label>
+                    < InputText type="text" placeholder='Benutzername' value={newUserName} onChange={(e) => setUserName(e.target.value)} />
+                    < InputText type="text" placeholder='Passwort' value={userPassword} onChange={(e) => setUserPassword(e.target.value)} />
+                    < InputText type="text" placeholder='Rolle' value={userRole} onChange={(e) => setUserRole(e.target.value)} />
+                    < Button onClick={handleNewUser} > Benutzer anlegen </Button>
+                </div>
+                <div>
+                    <label>Wort löschen </label>
+                    < InputText type="text" value={deleteWord} onChange={(e) => setWordToDelete(e.target.value)} />
+                    < Button onClick={handleDeleteWord} > Wort löschen </Button>
+                </div>
+                <div>
+                    <label>Benutzer löschen </label>
+                    < InputText type="text" value={deleteUser} onChange={(e) => setUsertoDelete(e.target.value)} />
+                    < Button onClick={handleDeleteUser} > Benutzer löschen </Button>
+                </div>
             </div>
         </Dialog>
 

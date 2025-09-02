@@ -11,7 +11,6 @@ public class WebSocketController {
     public WebSocketController(SimpMessagingTemplate simpMessagingTemplate) {
         this.simpMessagingTemplate = simpMessagingTemplate;
     }
-    @MessageMapping("/")
 
 
 }

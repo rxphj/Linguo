@@ -24,10 +24,11 @@ public class UserRepository {
         return b;
     }
     public List<Benutzer> findAll() {
-        String sql = "SELECT username, password, rolle FROM Benutzer";
-
+        benutzer.clear();
+        String sql = "SELECT id,username, password, rolle FROM Benutzer";
         return jdbctemplate.query(sql, (rs, rowNum) -> {
             Benutzer benutzer = new Benutzer();
+            benutzer.setId(rs.getLong(rs.findColumn("id")));
             benutzer.setUsername(rs.getString("username"));
             benutzer.setPassword(rs.getString("password"));
             benutzer.setRolle(Rolle.valueOf(rs.getString("rolle")));
@@ -58,7 +59,7 @@ public class UserRepository {
         return b;
     }
     public Benutzer findById(long id){
-        Benutzer b = null;
+        Benutzer b = new Benutzer();
         for (Benutzer benutzer : findAll()){
             if(benutzer.getId() == id){
                 b = benutzer;

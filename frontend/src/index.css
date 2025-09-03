@@ -427,7 +427,7 @@ footer div {
   .adminlogo {
   max-height: clamp(75px, 30vh, 200px);
   position: absolute;
-  top: -5vh;
+  top: -7vh;
   left: 8vh;
 }
 

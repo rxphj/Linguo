@@ -1,9 +1,12 @@
 {
   "dependencies": {
+    "@reduxjs/toolkit": "^2.8.2",
+    "@stomp/stompjs": "^6.1.2",
     "axios": "^1.11.0",
     "bootstrap": "^5.3.8",
-    "primeicons": "^7.0.0",
     "primereact": "^10.9.7",
-    "react-bootstrap": "^2.10.10"
+    "react-bootstrap": "^2.10.10",
+    "react-use-websocket": "^4.13.0",
+    "sockjs-client": "^1.6.1"
   }
 }

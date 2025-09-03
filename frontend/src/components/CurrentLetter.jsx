@@ -1,37 +1,31 @@
+import { useEffect, useState } from "react";
 import axios from "axios";
-import Timer from "./Timer";
-import { useState } from "react";  
 
-export default function CurrentLetter(){
-    
-    /*const letter =['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
-    
-    const randomLetter = Math.floor(Math.random() * 26);
-    return letter[randomLetter]; //0-25*/
-
-    //Buchstabe aus dem Backend ziehen
-
-
+export default function CurrentLetter({ isPause }) {
     const [letter, setLetter] = useState("");
 
-    const handleTimerState = (isPause) => {
+    // beim ersten Render sofort Buchstaben holen
+    useEffect(() => {
+        fetchLetter();
+    }, []);
 
-        if(isPause === false) {
-      
-   axios.get("http://localhost:8080/api/get/letter").then((res) => {
+    // immer wenn eine neue Runde startet (Pause -> false)
+    useEffect(() => {
+        if (isPause === false) {
+            fetchLetter();
+        }
+    }, [isPause]);
 
-    const letter = res.data; 
-    console.log("Buchstabe vom Backend:", letter);
-    
-  })
-  .catch((error) => {
-    console.error("Fehler beim Abrufen des Buchstabens:", error);
-  }, [isPause])
+    const fetchLetter = () => {
+        axios.get("http://localhost:8080/api/generate/buchstabe")
+            .then((res) => {
+                setLetter(res.data);
+                console.log("Buchstabe vom Backend:", res.data);
+            })
+            .catch((error) => {
+                console.error("Fehler beim Abrufen des Buchstabens:", error);
+            });
+    };
+
+    return <>{letter || "-"}</>;
 }
-
-}
-return <>{letter || "-"}</>;
-}
-
-
-  

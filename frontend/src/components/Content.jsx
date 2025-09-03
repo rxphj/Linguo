@@ -1,20 +1,16 @@
 import { useState } from "react";
 import CurrentLetter from "./CurrentLetter";
 import Timer from "./Timer";
-import Voting from "./voting";
 import { InputText } from "primereact/inputtext";
-import { Button } from 'primereact/button';
 
 export default function Content() {
-
-
-    // States für die Felder
     const [Stadt, setStadt] = useState("");
     const [Land, setLand] = useState("");
     const [Fluss, setFluss] = useState("");
     const [Tier, setTier] = useState("");
 
-    const [locked, setLocked] = useState(false); // Sperren nach Abschicken
+    const [locked, setLocked] = useState(false);
+    const [isPause, setIsPause] = useState(true);
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -22,48 +18,75 @@ export default function Content() {
         console.log("Abgeschickt:", { Stadt, Land, Fluss, Tier });
     };
 
-
-
+    const handleTimerState = (pause) => {
+        setIsPause(pause);
+        setLocked(pause); // Eingaben sperren, wenn Pause
+        if (!pause) {
+            // neue Runde: Felder zurücksetzen und freigeben
+            setStadt("");
+            setLand("");
+            setFluss("");
+            setTier("");
+            setLocked(false);
+        }
+    };
     return (
-
         <main className="content">
             <div className="toolBox">
                 <div className="toolLetter">
-                    Aktueller Buchstabe : <CurrentLetter />
+                    Aktueller Buchstabe: <CurrentLetter isPause={isPause} />
                 </div>
 
-                <div className="toolTimer"> <Timer /></div>
+                <div className="toolTimer">
+                    <Timer onTimerState={handleTimerState} />
+                </div>
             </div>
 
-            <form className="spielfeld">
-
+            <form className="spielfeld" onSubmit={handleSubmit}>
                 <div className="rubrik">
                     <label>Stadt</label><br />
-                    <InputText type="text" name="Stadt" placeholder="Stadt" value={Stadt} onChange={(e) => setStadt(e.target.value)} disabled={locked} />
+                    <InputText
+                        placeholder="Stadt"
+                        value={Stadt}
+                        onChange={(e) => setStadt(e.target.value)}
+                        disabled={locked}
+                    />
                 </div>
 
                 <div className="rubrik">
                     <label>Land</label><br />
-                    <InputText type="text" name="Land" placeholder="Land" value={Land} onChange={(e) => setLand(e.target.value)} disabled={locked} />
+                    <InputText
+                        placeholder="Land"
+                        value={Land}
+                        onChange={(e) => setLand(e.target.value)}
+                        disabled={locked}
+                    />
                 </div>
+
                 <div className="rubrik">
                     <label>Fluss</label><br />
-                    <InputText type="text" name="Stadt" placeholder="Fluss" value={Fluss} onChange={(e) => setFluss(e.target.value)} disabled={locked} />
+                    <InputText
+                        placeholder="Fluss"
+                        value={Fluss}
+                        onChange={(e) => setFluss(e.target.value)}
+                        disabled={locked}
+                    />
                 </div>
+
                 <div className="rubrik">
                     <label>Tier</label><br />
-                    <InputText type="text" name="Tier" placeholder="Tier" value={Tier} onChange={(e) => setTier(e.target.value)} disabled={locked} />
+                    <InputText
+                        placeholder="Tier"
+                        value={Tier}
+                        onChange={(e) => setTier(e.target.value)}
+                        disabled={locked}
+                    />
                 </div>
 
-                <button type="submit" onClick={handleSubmit} disabled={locked}>
+                <button type="submit" disabled={locked}>
                     Abschicken
                 </button>
-
             </form>
-
-           {/* <Voting />*/}
         </main>
-
-    )
-
+    );
 }

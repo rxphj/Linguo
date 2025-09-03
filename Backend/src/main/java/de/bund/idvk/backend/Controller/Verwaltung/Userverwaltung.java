@@ -36,8 +36,8 @@ public class Userverwaltung {
     public ResponseEntity<?>updateuser(@RequestBody Benutzer benutzer){
         return ResponseEntity.ok().body(userRepository.update(benutzer));
     }
-    @GetMapping("/read/user/by/object/{benutzer}")
-    public ResponseEntity<Benutzer> readuserbyid(@PathVariable Benutzer benutzer){
-        return ResponseEntity.ok().body(userRepository.findByObject(benutzer));
+    @GetMapping("/read/user/by/id/{id}")
+    public ResponseEntity<Benutzer> readuserbyid(@PathVariable long id){
+        return ResponseEntity.ok().body(userRepository.findById(id));
     }
 }

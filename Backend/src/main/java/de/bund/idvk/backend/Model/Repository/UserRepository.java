@@ -57,8 +57,14 @@ public class UserRepository {
         benutzer.add(b);
         return b;
     }
-    public Benutzer findByObject(Benutzer b){
-        return (Benutzer) benutzer.stream().filter(benu-> benu.getId()== b.getId());
+    public Benutzer findById(long id){
+        Benutzer b = null;
+        for (Benutzer benutzer : findAll()){
+            if(benutzer.getId() == id){
+                b = benutzer;
+            }
+        }
+        return b;
     }
 
 }

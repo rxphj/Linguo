@@ -1,5 +1,4 @@
 import axios from "axios";
-
 export async function login(username, password) {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
@@ -9,6 +8,15 @@ export async function login(username, password) {
     }, 500); // simuliert Netzwerkverzögerung
   });
 }
+
+//axios.get("localhost:8080/api/xxx/xxx").then(res =>{if(res.data===true){wortnichtvohanden= true})
+
+  axios.delete("http://localhost:8080/api/delete/wort" + {name: "yasmin"}).then(res => {}).catch()
+  //axios.get("htttp://localhost:8080/ws/get/letter").then(res => {if(res.data === true)})
+
+    
+
+
 
 // Wörter
 export const addWord = async (word) => {
@@ -28,8 +36,6 @@ export const deleteWord = async (word) => {
     });
     return res.json();
 }
-
-axios.get("http://localhost:8080/api/read/user")
 
 // User
 export const addUser = async (user) => {

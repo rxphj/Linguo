@@ -1,6 +1,10 @@
 import { useState } from "react";
 import CurrentLetter from "./CurrentLetter";
 import Timer from "./Timer";
+import Voting from "./voting";
+import { InputText } from "primereact/inputtext";
+import { Button } from 'primereact/button';
+import axios from "axios";
 
 export default function Content() {
 
@@ -19,33 +23,39 @@ export default function Content() {
         console.log("Abgeschickt:", { Stadt, Land, Fluss, Tier });
     };
 
+
+axios.get("http://localhost:8080/api/generate/buchstabe").then((response) => {
+    console.log(response.data);
+})
     return (
 
         <main className="content">
-            <div className="tool">
-                Aktueller Buchstabe :
-            </div>
+            <div className="toolBox">
+                <div className="toolLetter">
+                    Aktueller Buchstabe : <CurrentLetter />
+                </div>
 
-            <div className="tool"> timer</div>
+                <div className="toolTimer"> <Timer /></div>
+            </div>
 
             <form className="spielfeld">
 
                 <div className="rubrik">
                     <label>Stadt</label><br />
-                    <input type="text" name="Stadt" placeholder="Stadt" value={Stadt} onChange={(e) => setStadt(e.target.value)} disabled={locked} />
+                    <InputText type="text" name="Stadt" placeholder="Stadt" value={Stadt} onChange={(e) => setStadt(e.target.value)} disabled={locked} />
                 </div>
 
                 <div className="rubrik">
                     <label>Land</label><br />
-                    <input type="text" name="Land" placeholder="Land" value={Land} onChange={(e) => setLand(e.target.value)} disabled={locked} />
+                    <InputText type="text" name="Land" placeholder="Land" value={Land} onChange={(e) => setLand(e.target.value)} disabled={locked} />
                 </div>
                 <div className="rubrik">
                     <label>Fluss</label><br />
-                    <input type="text" name="Stadt" placeholder="Fluss" value={Fluss} onChange={(e) => setFluss(e.target.value)} disabled={locked} />
+                    <InputText type="text" name="Stadt" placeholder="Fluss" value={Fluss} onChange={(e) => setFluss(e.target.value)} disabled={locked} />
                 </div>
                 <div className="rubrik">
                     <label>Tier</label><br />
-                    <input type="text" name="Tier" placeholder="Tier" value={Tier} onChange={(e) => setTier(e.target.value)} disabled={locked} />
+                    <InputText type="text" name="Tier" placeholder="Tier" value={Tier} onChange={(e) => setTier(e.target.value)} disabled={locked} />
                 </div>
 
                 <button type="submit" onClick={handleSubmit} disabled={locked}>
@@ -53,6 +63,8 @@ export default function Content() {
                 </button>
 
             </form>
+
+           {/* <Voting />*/}
         </main>
 
     )

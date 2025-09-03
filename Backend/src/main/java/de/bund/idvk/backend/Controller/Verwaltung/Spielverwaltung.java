@@ -36,7 +36,7 @@ public class Spielverwaltung {
 
         return ResponseEntity.ok(found);
     }
-    @GetMapping("/generate/wort")
+    @GetMapping("/generate/buchstabe")
     public ResponseEntity<String>generateWort() {
         char[] buchstaben= {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'};
         int rand= (int)(Math.random()*buchstaben.length);

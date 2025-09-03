@@ -1,35 +1,62 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
+import axios from "axios";
+import { InputText } from "primereact/inputtext";
 import CurrentLetter from "./CurrentLetter";
 import Timer from "./Timer";
-import { InputText } from "primereact/inputtext";
 
 export default function Content() {
+
     const [Stadt, setStadt] = useState("");
     const [Land, setLand] = useState("");
     const [Fluss, setFluss] = useState("");
     const [Tier, setTier] = useState("");
 
-    const [locked, setLocked] = useState(false);
+    const [isSubmitted, setIsSubmitted] = useState(false);
     const [isPause, setIsPause] = useState(true);
+    const pauseState = useRef(isPause);
+
+    const locked = isPause || isSubmitted;
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        setLocked(true);
+        setIsSubmitted(true);
         console.log("Abgeschickt:", { Stadt, Land, Fluss, Tier });
     };
 
     const handleTimerState = (pause) => {
-        setIsPause(pause);
-        setLocked(pause); // Eingaben sperren, wenn Pause
-        if (!pause) {
+        const checkPause = pauseState.current;
+
+        if (checkPause == true && pause === false) {
             // neue Runde: Felder zurücksetzen und freigeben
             setStadt("");
             setLand("");
             setFluss("");
             setTier("");
-            setLocked(false);
+            setIsSubmitted(false);
+
+            //Pausen Ende Status ans Backeend
+            axios
+                .post("http://localhost:8080/api/start", { isPause: false })
+                .catch(err => console.error("Fehler beim Senden des Start Status:", err));
+        };
+
+
+        // Pausen Anfang ans Backend
+        if (pauseState === false && pause === true) {
+            axios
+                .post("http://localhost:8080/api/end", { isPause: true })
+                .catch((err) =>
+                    console.error("Fehler beim Senden des End Status:", err)
+                );
         }
+
+        //Pause-Status aktualisieren
+        setIsPause(pause);
+        pauseState.current = pause;
+
     };
+
+
     return (
         <main className="content">
             <div className="toolBox">

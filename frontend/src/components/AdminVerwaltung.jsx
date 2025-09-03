@@ -9,6 +9,7 @@ export default function AdminVerwaltung({ visible, onHide }) {
 
     //neues Wort anlegen
     const [newWord, setNewWord] = useState('');
+    const [wordCategory, setWordCategory] = useState('');
     //neuer Benutzer anlegen
     const [newUserName, setUserName] = useState('');
     const [userPassword, setUserPassword] = useState('');
@@ -20,9 +21,10 @@ export default function AdminVerwaltung({ visible, onHide }) {
 
     //neues Wort anlegen (handling)
     const handleNewWord = async () => {
-        if (!newWord) return;
-        await addWord(newWord);
+        if (!newWord || !wordCategory) return;
+        await addWord({word: newWord, category: wordCategory});
         setNewWord('');
+        setWordCategory('');
     };
 
     //Löschen eines Wortes(handling)
@@ -59,7 +61,8 @@ export default function AdminVerwaltung({ visible, onHide }) {
             <div className='adminview'>
                 <div>
                     <label>Wort anlegen </label>
-                    < InputText type="text" value={newWord} onChange={(e) => setNewWord(e.target.value)} />
+                    < InputText type="text" placeholder='Neues Wort' value={newWord} onChange={(e) => setNewWord(e.target.value)} />
+                    < InputText type="text" placeholder='Wort Kategorie' value={wordCategory} onChange={(e) => setWordCategory(e.target.value)} />
                     < Button onClick={handleNewWord} > Wort anlegen </Button>
                 </div>
                 <div>

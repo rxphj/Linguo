@@ -25,7 +25,7 @@ public class UserRepository {
     }
     public List<Benutzer> findAll() {
         benutzer.clear();
-        String sql = "SELECT id,username, password, rolle FROM Benutzer";
+        String sql = "SELECT id,username, password, rolle FROM benutzer";
         return jdbctemplate.query(sql, (rs, rowNum) -> {
             Benutzer benutzer = new Benutzer();
             benutzer.setId(rs.getLong(rs.findColumn("id")));

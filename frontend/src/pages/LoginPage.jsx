@@ -5,6 +5,8 @@ import SockJS from 'sockjs-client';
 import axios from "axios";
 import { Client } from '@stomp/stompjs';
 axios.get("http://localhost:3001/api/read/user")
+
+
 export default function LoginPage({ onLoginSuccess }) {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -12,7 +14,7 @@ export default function LoginPage({ onLoginSuccess }) {
     const [registeredUsers, setRegisteredUsers] = useState([]);
     const [stompClient, setStompClient] = useState(null);
 
-    // WebSocket-Verbindung aufbauen
+    // WebSocket-Verbindung aufbauen geschrieben von Raphael Pohl
     useEffect(() => {
         const socket = new SockJS('http://localhost:8080/ws');
         const client = new Client({
@@ -41,7 +43,7 @@ export default function LoginPage({ onLoginSuccess }) {
         };
     }, []);
 
-    // Registrierung senden
+    // Registrierung senden geschrieben von Raphael Pohl
     const handleRegister = () => {
         if (stompClient && stompClient.connected) {
             const user = { username };
@@ -55,7 +57,7 @@ export default function LoginPage({ onLoginSuccess }) {
         }
     };
 
-    // Login senden
+    // Login senden geschrieben von Raphael Pohl
     const handleLogin = async () => {
         setError('');
         try {
@@ -65,10 +67,10 @@ export default function LoginPage({ onLoginSuccess }) {
         } catch (err) {
             setError(err.message);
         }
-        stompClient.disconnect();
+        stompClient.deactivate();
     };
 
-    // UI anzeigen
+    // UI anzeigen geschrieben von Yasmin Holik
     return (
         <div className="LoginPage">
             <div className="login-form">

@@ -4,6 +4,9 @@ import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
 import axios from 'axios';
 
+//Komplette AdminVerwaltung.jsx geschrieben von Yasmin Holik
+
+
 //Prop übergabe visibile (anzeigen des Dialogs und onHide um Dialog zu verbergen)
 export default function AdminVerwaltung({ visible, onHide }) {
 
@@ -110,12 +113,3 @@ export default function AdminVerwaltung({ visible, onHide }) {
             )
 
 }
-
-
-/*onHide = {() => { if (!showDialog) return; setShowDialog(false); }}>
-    <div>
-    <label>Wort anlegen </label>
-        < input type = "text" value = { newWord } onChange = {(e) => setNewWord(e.target.value)} />
-            < button onClick = { handleNewWord } > Wort anlegen </button>
-                </div>
-                </Dialog>*/

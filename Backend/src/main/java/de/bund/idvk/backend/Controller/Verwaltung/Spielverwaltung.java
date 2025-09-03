@@ -1,15 +1,16 @@
 package de.bund.idvk.backend.Controller.Verwaltung;
 
+import de.bund.idvk.backend.Model.Benutzer;
 import de.bund.idvk.backend.Model.Repository.UserRepository;
 import de.bund.idvk.backend.Model.Repository.WortRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-@RestController("/api")
+@RestController
+@CrossOrigin
+@RequestMapping("/api")
 public class Spielverwaltung {
     BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
     @Autowired
@@ -18,15 +19,21 @@ public class Spielverwaltung {
     WortRepo wortRepo;
 
     @GetMapping("/login")
-    public ResponseEntity<Boolean>login(@RequestBody String username, @RequestBody String password) {
+    public ResponseEntity<Boolean> login(@RequestBody Benutzer loginRequest) {
         boolean found = false;
-        for(int i=0; i< userRepository.findAll().size(); i++){
-            if(userRepository.findAll().get(i).getUsername().equals(username)){
-                if(bCryptPasswordEncoder.matches(password,userRepository.findAll().get(i).getPassword())){
+
+        String username = loginRequest.getUsername();
+        String password = loginRequest.getPassword();
+
+        for (Benutzer user : userRepository.findAll()) {
+            if (user.getUsername().equals(username)) {
+                if (bCryptPasswordEncoder.matches(password, user.getPassword())) {
                     found = true;
+                    break;
                 }
             }
         }
+
         return ResponseEntity.ok(found);
     }
     @GetMapping("/generate/wort")

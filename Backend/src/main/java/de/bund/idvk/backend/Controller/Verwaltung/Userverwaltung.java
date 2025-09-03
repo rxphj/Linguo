@@ -28,9 +28,9 @@ public class Userverwaltung {
     public List<Benutzer> readuser(){
         return userRepository.findAll();
     }
-    @DeleteMapping("/delete/user")
-    public ResponseEntity<Boolean>deleteuser(@RequestBody Benutzer benutzer){
-        return ResponseEntity.ok().body(userRepository.delete(benutzer));
+    @DeleteMapping("/delete/user/{id}")
+    public ResponseEntity<Boolean>deleteuser(@PathVariable long id){
+        return ResponseEntity.ok().body(userRepository.delete((id)));
     }
     @PutMapping("/update/user")
     public ResponseEntity<?>updateuser(@RequestBody Benutzer benutzer){

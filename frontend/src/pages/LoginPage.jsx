@@ -65,6 +65,7 @@ export default function LoginPage({ onLoginSuccess }) {
         } catch (err) {
             setError(err.message);
         }
+        stompClient.disconnect();
     };
 
     // UI anzeigen

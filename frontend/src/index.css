@@ -181,6 +181,13 @@ footer div {
   padding: 0.8rem;
 }
 
+.waitingLobby {
+  display: flex;          
+  align-items: center;    
+  justify-content: center; 
+  height: 100vh;          
+}
+
 .poll{
   display: flex;
   justify-content: space-evenly;

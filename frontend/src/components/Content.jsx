@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { InputText } from "primereact/inputtext";
 import CurrentLetter from "./CurrentLetter";
@@ -14,6 +14,25 @@ export default function Content() {
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [isPause, setIsPause] = useState(true);
     const pauseState = useRef(isPause);
+
+    const [waitingLobby, setWaitingLobby] = useState("");
+
+    useEffect(() => {
+        axios
+            .get("http://localhost:8080/api/status")
+            .then((res) => {
+                const currentPause = res.data.isPause;
+                setIsPause(currentPause);
+                pauseState.current = currentPause;
+
+                // Falls Spiel gerade läuft → Spieler muss warten
+                if (!currentPause) {
+                    setIsWaiting(true);
+                }
+            })
+            .catch((err) => console.error("Fehler beim Laden des Status:", err));
+
+    }, [])
 
     const locked = isPause || isSubmitted;
 
@@ -34,12 +53,14 @@ export default function Content() {
             setTier("");
             setIsSubmitted(false);
 
+            // Spieler kann Teilnehmen
+            setWaitingLobby(false);
+
             //Pausen Ende Status ans Backeend
             axios
                 .post("http://localhost:8080/api/start", { isPause: false })
                 .catch(err => console.error("Fehler beim Senden des Start Status:", err));
         };
-
 
         // Pausen Anfang ans Backend
         if (pauseState === false && pause === true) {
@@ -55,6 +76,18 @@ export default function Content() {
         pauseState.current = pause;
 
     };
+
+    //Wartelobby
+
+    if (waitingLobby) {
+        return (
+            <main className="waitingLobby">
+                <h1>Bitte warten,
+                    <Timer/>
+                </h1>
+            </main>
+        )
+    }
 
 
     return (

@@ -15,11 +15,11 @@ export default function Content() {
     const [isPause, setIsPause] = useState(true);
     const pauseState = useRef(isPause);
 
-    const [waitingLobby, setWaitingLobby] = useState("");
+    const [waitingLobby, setWaitingLobby] = useState(false);
 
     useEffect(() => {
         axios
-            .get("http://localhost:8080/api/status")
+            .get("http://localhost:8080/api/status") // Muss noch an den korrekten Pfad angebunden werden, erwartet wird hier der aktuelle Status des Spiels(Pause oder Game)
             .then((res) => {
                 const currentPause = res.data.isPause;
                 setIsPause(currentPause);
@@ -27,7 +27,7 @@ export default function Content() {
 
                 // Falls Spiel gerade läuft → Spieler muss warten
                 if (!currentPause) {
-                    setIsWaiting(true);
+                    setWaitingLobby(true);
                 }
             })
             .catch((err) => console.error("Fehler beim Laden des Status:", err));
@@ -39,13 +39,23 @@ export default function Content() {
     const handleSubmit = (e) => {
         e.preventDefault();
         setIsSubmitted(true);
-        console.log("Abgeschickt:", { Stadt, Land, Fluss, Tier });
+
+        const gameInput = {
+            stadt: Stadt,
+            land: Land,
+            fluss: Fluss,
+            tier: Tier,
+        };
+
+        axios.post("http://localhost:8080/api/submit", gameInput) //Hier Korrekten Pfad eintragen, für die Entgegennahme der Spieldaten
+
+
     };
 
     const handleTimerState = (pause) => {
         const checkPause = pauseState.current;
 
-        if (checkPause == true && pause === false) {
+        if (checkPause === true && pause === false) {
             // neue Runde: Felder zurücksetzen und freigeben
             setStadt("");
             setLand("");
@@ -83,7 +93,7 @@ export default function Content() {
         return (
             <main className="waitingLobby">
                 <h1>Bitte warten,
-                    <Timer/>
+                    <Timer />
                 </h1>
             </main>
         )

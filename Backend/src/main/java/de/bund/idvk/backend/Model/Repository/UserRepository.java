@@ -1,6 +1,7 @@
 package de.bund.idvk.backend.Model.Repository;
 
 import de.bund.idvk.backend.Model.Benutzer;
+import de.bund.idvk.backend.Model.Enums.Rolle;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -23,12 +24,28 @@ public class UserRepository {
         return b;
     }
     public List<Benutzer> findAll() {
-        return benutzer;
+        benutzer.clear();
+        String sql = "SELECT id,username, password, rolle FROM benutzer";
+        return jdbctemplate.query(sql, (rs, rowNum) -> {
+            Benutzer benutzer = new Benutzer();
+            benutzer.setId(rs.getLong(rs.findColumn("id")));
+            benutzer.setUsername(rs.getString("username"));
+            benutzer.setPassword(rs.getString("password"));
+            benutzer.setRolle(Rolle.valueOf(rs.getString("rolle")));
+            return benutzer;
+        });
     }
-    public boolean delete(Benutzer b){
-        String sql = "DELETE FROM Benutzer WHERE username = (?)";
-        jdbctemplate.update(sql, b.getUsername());
-        return benutzer.remove(b);
+    public boolean delete(long id){
+        boolean deleted= false;
+        String sql = "DELETE FROM Benutzer WHERE id = (?)";
+        jdbctemplate.update(sql, id);
+        for(Benutzer b : findAll()){
+            if(b.getId() == id){
+                benutzer.remove(b);
+                deleted = true;
+            }
+        }
+        return deleted;
     }
     public Benutzer update(Benutzer b){
         String sql ="UPDATE Benutzer SET rolle = (?) AND  username= (?) AND rolle =(?) AND score = (?)  WHERE id = (?)";
@@ -41,8 +58,14 @@ public class UserRepository {
         benutzer.add(b);
         return b;
     }
-    public Benutzer findByObject(Benutzer b){
-        return (Benutzer) benutzer.stream().filter(benu-> benu.getId()== b.getId());
+    public Benutzer findById(long id){
+        Benutzer b = new Benutzer();
+        for (Benutzer benutzer : findAll()){
+            if(benutzer.getId() == id){
+                b = benutzer;
+            }
+        }
+        return b;
     }
 
 }

@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="dataSourceStorageLocal" created-in="IU-252.23892.409">
-    <data-source name="Linguo.sqlite" uuid="e06acdd1-da83-449a-8eaa-cdd416fe389a">
+    <data-source name="Linguo.sqlite [2]" uuid="3003505c-22a5-4019-8353-644f68803aed">
       <database-info product="SQLite" version="3.45.1" jdbc-version="4.2" driver-name="SQLite JDBC" driver-version="3.45.1.0" dbms="SQLITE" exact-version="3.45.1" exact-driver-version="3.45">
         <identifier-quote-string>&quot;</identifier-quote-string>
       </database-info>
       <case-sensitivity plain-identifiers="mixed" quoted-identifiers="mixed" />
+      <secret-storage>master_key</secret-storage>
       <auth-provider>no-auth</auth-provider>
       <schema-mapping>
         <introspection-scope>
-          <node kind="schema" negative="1" />
+          <node kind="schema" qname="@" />
         </introspection-scope>
       </schema-mapping>
     </data-source>

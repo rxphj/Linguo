@@ -11,11 +11,10 @@ export default function LoginPage({ onLoginSuccess }) {
     const [error, setError] = useState('');
     const [registeredUsers, setRegisteredUsers] = useState([]);
     const [stompClient, setStompClient] = useState(null);
-    const [user, setUser] = useState(null);
 
     //User im Backend prüfen (Yasmin)
         useEffect(() => {
-        axios.get("http://localhost:3001/api/login" + {username:username, password:password})
+        axios.get("http://localhost:3001/api/login")
             .then(res => setRegisteredUsers(res.data))
             .catch(err => console.error(err));
     }, []);
@@ -69,7 +68,7 @@ export default function LoginPage({ onLoginSuccess }) {
         try {
             const res = await login(username, password);
             handleRegister(); // Benutzer bei erfolgreichem Login registrieren
-            onLoginSuccess(res);
+            onLoginSuccess(res.data);
         } catch (err) {
             setError(err.message);
         }

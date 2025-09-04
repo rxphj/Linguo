@@ -1,6 +1,8 @@
 package de.bund.idvk.backend.Controller.Verwaltung;
 
+import de.bund.idvk.backend.Model.DTOs.WortpruefungDTO;
 import de.bund.idvk.backend.Model.Repository.WortRepo;
+import de.bund.idvk.backend.Model.Wort;
 import org.apache.commons.text.similarity.JaroWinklerDistance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,18 +25,19 @@ public class Spielverwaltung {
     }
 
     @GetMapping("/check/wort")
-    public ResponseEntity<Boolean>checkWort(@RequestBody String wort) {
+    public ResponseEntity<WortpruefungDTO>checkWort(@RequestBody Wort wort) {
+        WortpruefungDTO wortpruefungDTO=null;
         System.out.println(wort);
-        boolean found= false;
         for(int i=0; i< wortRepo.findAll().size(); i++){
-            double distanz = jaroWinklerDistance.apply(wort, wortRepo.findAll().get(i).getName());
+            double distanz = jaroWinklerDistance.apply(wort.getName(), wortRepo.findAll().get(i).getName());
             if (distanz>= 0.85) {
+                System.out.println(wortRepo.findAll().get(i).getName());
                 System.out.println(distanz);
-                found = true;
+                wortpruefungDTO= new WortpruefungDTO(wort,true);
                 break;
             }
         }
-        return ResponseEntity.ok(found);
+        return ResponseEntity.ok(wortpruefungDTO);
     }
 
 }

@@ -11,30 +11,4 @@
       </scope>
     </mapping>
   </component>
-  <component name="SqlDataSourceStorage">
-    <option name="dataSources">
-      <list>
-        <State>
-          <option name="id" value="df41a438-8ecb-4bdf-9cf7-721f4179328c" />
-          <option name="name" value="DDL data source" />
-          <option name="dbmsName" value="SQLITE" />
-          <option name="urls">
-            <array>
-              <option value="file://$PROJECT_DIR$/Backend/src/main/resources/db/migrations" />
-            </array>
-          </option>
-        </State>
-        <State>
-          <option name="id" value="83f4c9c9-4763-4fc4-8d1d-f1b07b126a94" />
-          <option name="name" value="Linguo.sqlite (DDL)" />
-          <option name="dbmsName" value="SQLITE" />
-          <option name="parent" value="e06acdd1-da83-449a-8eaa-cdd416fe389a" />
-          <option name="urls">
-            <array />
-          </option>
-          <option name="outLayout" value="File per object by schema.groovy" />
-        </State>
-      </list>
-    </option>
-  </component>
 </project>

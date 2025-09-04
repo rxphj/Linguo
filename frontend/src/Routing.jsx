@@ -19,11 +19,16 @@ export default function Routing() {
         setUser(userData);
     };
 
+    const handleLogout = () => { 
+        localStorage.removeItem('user'); 
+        setUser(null); 
+    };
+
     if (!user) return <LoginPage onLoginSuccess={handleLoginSuccess} />;
 
-    if (user.rolle === 'admin') return <AdminPage />;
+    if (user.role === 'admin') return <AdminPage />;
 
-    return <GamePage />;
+    return <GamePage />;//
 }
 
 

@@ -9,6 +9,7 @@ export default function Routing() {
         return saved ? JSON.parse(saved) : null;
     });
 
+
     useEffect(() => {
         if (user) {
             localStorage.setItem('user', JSON.stringify(user));
@@ -19,9 +20,9 @@ export default function Routing() {
         setUser(userData);
     };
 
-    const handleLogout = () => { 
-        localStorage.removeItem('user'); 
-        setUser(null); 
+    const handleLogout = () => {
+        localStorage.removeItem('user');
+        setUser(null);
     };
 
     if (!user) return <LoginPage onLoginSuccess={handleLoginSuccess} />;

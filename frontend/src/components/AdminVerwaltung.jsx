@@ -52,7 +52,7 @@ export default function AdminVerwaltung({ visible, onHide }) {
     const handleNewUser = async () => {
         if (!newUserName || !userPassword || !userRole) return;
         try {
-            await axios.post('http://localhost:8080/api/users', { username: newUserName, password: userPassword, role: userRole });
+            await axios.post('http://localhost:8080/api/users', { username: newUserName, password: userPassword, rolle: userRole });
             setUserName('');
             setUserPassword('');
             setUserRole('');

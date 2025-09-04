@@ -4,8 +4,6 @@ import React, { useEffect, useState } from 'react';
 import SockJS from 'sockjs-client';
 import axios from "axios";
 import { Client } from '@stomp/stompjs';
-axios.get("http://localhost:3001/api/read/user")
-
 
 export default function LoginPage({ onLoginSuccess }) {
     const [username, setUsername] = useState('');
@@ -13,6 +11,13 @@ export default function LoginPage({ onLoginSuccess }) {
     const [error, setError] = useState('');
     const [registeredUsers, setRegisteredUsers] = useState([]);
     const [stompClient, setStompClient] = useState(null);
+
+    //User im Backend prüfen (Yasmin)
+        useEffect(() => {
+        axios.get("http://localhost:3001/api/read/user")
+            .then(res => setRegisteredUsers(res.data))
+            .catch(err => console.error(err));
+    }, []);
 
     // WebSocket-Verbindung aufbauen geschrieben von Raphael Pohl
     useEffect(() => {
@@ -67,8 +72,9 @@ export default function LoginPage({ onLoginSuccess }) {
         } catch (err) {
             setError(err.message);
         }
-        stompClient.deactivate();
+       // stompClient.deactivate(); //erst beim Login deactivieren
     };
+
 
     // UI anzeigen geschrieben von Yasmin Holik
     return (
@@ -79,12 +85,14 @@ export default function LoginPage({ onLoginSuccess }) {
                     placeholder="Benutzername"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
+                    required
                 /> <br />
                 <input
                     placeholder="Passwort"
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
+                    required
                 /> <br />
                 <Button onClick={handleLogin}>Login</Button>
                 {error && <p style={{ color: 'red' }}>{error}</p>}

@@ -3,6 +3,7 @@ import axios from "axios";
 import { InputText } from "primereact/inputtext";
 import CurrentLetter from "./CurrentLetter";
 import Timer from "./Timer";
+import Voting from "./Voting";
 
 export default function Content() {
 
@@ -19,7 +20,7 @@ export default function Content() {
 
     useEffect(() => {
         axios
-            .get("http://localhost:8080/api/status") // Muss noch an den korrekten Pfad angebunden werden, erwartet wird hier der aktuelle Status des Spiels(Pause oder Game)
+            .get("http://localhost:8080/api/currentstate") // Muss noch an den korrekten Pfad angebunden werden, erwartet wird hier der aktuelle Status des Spiels(Pause oder Game)
             .then((res) => {
                 const currentPause = res.data.isPause;
                 setIsPause(currentPause);
@@ -157,6 +158,9 @@ export default function Content() {
                     Abschicken
                 </button>
             </form>
+  <Voting/>
         </main>
+        
     );
 }
+

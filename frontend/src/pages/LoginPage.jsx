@@ -1,5 +1,5 @@
+// LoginPage.js
 import { Button } from 'primereact/button';
-import { login } from '../api/rest';
 import React, { useEffect, useState } from 'react';
 import SockJS from 'sockjs-client';
 import axios from "axios";
@@ -9,17 +9,9 @@ export default function LoginPage({ onLoginSuccess }) {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
-    const [registeredUsers, setRegisteredUsers] = useState([]);
     const [stompClient, setStompClient] = useState(null);
 
-    //User im Backend prüfen (Yasmin)
-        useEffect(() => {
-        axios.get("http://localhost:3001/api/login")
-            .then(res => setRegisteredUsers(res.data))
-            .catch(err => console.error(err));
-    }, []);
-
-    // WebSocket-Verbindung aufbauen geschrieben von Raphael Pohl
+    // WebSocket-Verbindung aufbauen
     useEffect(() => {
         const socket = new SockJS('http://localhost:8080/ws');
         const client = new Client({
@@ -27,13 +19,6 @@ export default function LoginPage({ onLoginSuccess }) {
             reconnectDelay: 5000,
             onConnect: () => {
                 console.log('✅ WebSocket verbunden');
-
-                // Topic abonnieren
-                client.subscribe('/topic/register', (message) => {
-                    console.log('📥 Nachricht empfangen:', message.body);
-                    const user = JSON.parse(message.body);
-                    setRegisteredUsers((prev) => [...prev, user]);
-                });
             },
             onStompError: (frame) => {
                 console.error('❌ STOMP Fehler:', frame);
@@ -43,12 +28,10 @@ export default function LoginPage({ onLoginSuccess }) {
         client.activate();
         setStompClient(client);
 
-        return () => {
-            client.deactivate();
-        };
+        return () => client.deactivate();
     }, []);
 
-    // Registrierung senden geschrieben von Raphael Pohl
+    // Registrierung über WebSocket senden
     const handleRegister = () => {
         if (stompClient && stompClient.connected) {
             const user = { username };
@@ -62,21 +45,25 @@ export default function LoginPage({ onLoginSuccess }) {
         }
     };
 
-    // Login senden geschrieben von Raphael Pohl
+    // Login über Axios direkt
     const handleLogin = async () => {
         setError('');
         try {
-            const res = await login(username, password);
-            handleRegister(); // Benutzer bei erfolgreichem Login registrieren
-            onLoginSuccess(res.data);
+            const res = await axios.post("http://localhost:3001/api/login", {
+                username,
+                password
+            });
+
+            console.log("Login erfolgreich:", res.data);
+            handleRegister(); // WebSocket-Registrierung
+            onLoginSuccess(res.data); // User an Routing weitergeben
+
         } catch (err) {
-            setError(err.message);
+            console.error("Login-Fehler:", err.response || err);
+            setError(err.response?.data?.message || "Login fehlgeschlagen");
         }
-       // stompClient.deactivate(); //erst beim Login deactivieren
     };
 
-
-    // UI anzeigen geschrieben von Yasmin Holik
     return (
         <div className="LoginPage">
             <div className="login-form">
@@ -97,7 +84,6 @@ export default function LoginPage({ onLoginSuccess }) {
                 <Button onClick={handleLogin}>Login</Button>
                 {error && <p style={{ color: 'red' }}>{error}</p>}
             </div>
-
         </div>
     );
 }

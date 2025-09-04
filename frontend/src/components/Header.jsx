@@ -1,5 +1,6 @@
 import { Button } from 'primereact/button';
 import Logout from './Logout';
+import Help from './Help';
 //geschrieben von Yasmin
 export default function Header({ adminlogo }) {
   return (
@@ -14,6 +15,7 @@ export default function Header({ adminlogo }) {
 
       <div className='rechts'>
         <Logout/>
+        <Help/>
       </div>
 
     </header>

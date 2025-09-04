@@ -49,7 +49,7 @@ export default function LoginPage({ onLoginSuccess }) {
     const handleLogin = async () => {
         setError('');
         try {
-            const res = await axios.post("http://localhost:3001/api/login", {
+            const res = await axios.post("http://localhost:8080/api/sesseion/login", {
                 username,
                 password
             });

@@ -11,10 +11,11 @@ export default function LoginPage({ onLoginSuccess }) {
     const [error, setError] = useState('');
     const [registeredUsers, setRegisteredUsers] = useState([]);
     const [stompClient, setStompClient] = useState(null);
+    const [user, setUser] = useState(null);
 
     //User im Backend prüfen (Yasmin)
         useEffect(() => {
-        axios.get("http://localhost:3001/api/read/user")
+        axios.get("http://localhost:3001/api/login" + {username:username, password:password})
             .then(res => setRegisteredUsers(res.data))
             .catch(err => console.error(err));
     }, []);

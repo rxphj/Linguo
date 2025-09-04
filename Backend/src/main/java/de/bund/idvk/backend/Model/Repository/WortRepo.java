@@ -1,5 +1,8 @@
 package de.bund.idvk.backend.Model.Repository;
 
+import de.bund.idvk.backend.Model.Benutzer;
+import de.bund.idvk.backend.Model.Enums.Rolle;
+import de.bund.idvk.backend.Model.Enums.Rubrik;
 import de.bund.idvk.backend.Model.Wort;
 import org.springframework.stereotype.Repository;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -22,7 +25,14 @@ public class WortRepo {
         return wort;
     }
     public List<Wort> findAll(){
-        return woerter;
+        String sql = "SELECT id, name, rubrik FROM wort";
+        return jdbcTemplate.query(sql, (rs, rowNum) -> {
+            Wort wort = new Wort();
+            wort.setId(rs.getLong(rs.findColumn("id")));
+            wort.setName(rs.getString("name"));
+            wort.setRubrik(Rubrik.valueOf(rs.getString("rubrik")));
+            return wort;
+        });
     }
     public Wort findByObject(Wort wort){
         return (Wort)woerter.stream().filter(w-> w.getId() == wort.getId());

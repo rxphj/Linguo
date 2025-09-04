@@ -20,6 +20,7 @@ repositories {
 }
 
 dependencies {
+    implementation("org.apache.commons:commons-text:1.14.0")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.xerial:sqlite-jdbc:3.49.1.0")
     implementation("org.hibernate.orm:hibernate-community-dialects")

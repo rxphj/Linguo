@@ -28,7 +28,7 @@ export default function Routing() {
 
     if (user.rolle === 'admin') return <AdminPage />;
 
-    return <GamePage />;
+    return <GamePage />;//
 }
 
 

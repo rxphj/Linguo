@@ -14,7 +14,7 @@ export default function LoginPage({ onLoginSuccess }) {
 
     //User im Backend prüfen (Yasmin)
         useEffect(() => {
-        axios.get("http://localhost:3001/api/read/user")
+        axios.get("http://localhost:3001/api/login")
             .then(res => setRegisteredUsers(res.data))
             .catch(err => console.error(err));
     }, []);
@@ -68,7 +68,7 @@ export default function LoginPage({ onLoginSuccess }) {
         try {
             const res = await login(username, password);
             handleRegister(); // Benutzer bei erfolgreichem Login registrieren
-            onLoginSuccess(res);
+            onLoginSuccess(res.data);
         } catch (err) {
             setError(err.message);
         }

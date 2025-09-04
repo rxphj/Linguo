@@ -1,35 +1,105 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import axios from "axios";
+import { InputText } from "primereact/inputtext";
 import CurrentLetter from "./CurrentLetter";
 import Timer from "./Timer";
-import { InputText } from "primereact/inputtext";
 
 export default function Content() {
+
     const [Stadt, setStadt] = useState("");
     const [Land, setLand] = useState("");
     const [Fluss, setFluss] = useState("");
     const [Tier, setTier] = useState("");
 
-    const [locked, setLocked] = useState(false);
+    const [isSubmitted, setIsSubmitted] = useState(false);
     const [isPause, setIsPause] = useState(true);
+    const pauseState = useRef(isPause);
+
+    const [waitingLobby, setWaitingLobby] = useState(false);
+
+    useEffect(() => {
+        axios
+            .get("http://localhost:8080/api/status") // Muss noch an den korrekten Pfad angebunden werden, erwartet wird hier der aktuelle Status des Spiels(Pause oder Game)
+            .then((res) => {
+                const currentPause = res.data.isPause;
+                setIsPause(currentPause);
+                pauseState.current = currentPause;
+
+                // Falls Spiel gerade läuft → Spieler muss warten
+                if (!currentPause) {
+                    setWaitingLobby(true);
+                }
+            })
+            .catch((err) => console.error("Fehler beim Laden des Status:", err));
+
+    }, [])
+
+    const locked = isPause || isSubmitted;
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        setLocked(true);
-        console.log("Abgeschickt:", { Stadt, Land, Fluss, Tier });
+        setIsSubmitted(true);
+
+        const gameInput = {
+            stadt: Stadt,
+            land: Land,
+            fluss: Fluss,
+            tier: Tier,
+        };
+
+        axios.post("http://localhost:8080/api/submit", gameInput) //Hier Korrekten Pfad eintragen, für die Entgegennahme der Spieldaten
+
+
     };
 
     const handleTimerState = (pause) => {
-        setIsPause(pause);
-        setLocked(pause); // Eingaben sperren, wenn Pause
-        if (!pause) {
+        const checkPause = pauseState.current;
+
+        if (checkPause === true && pause === false) {
             // neue Runde: Felder zurücksetzen und freigeben
             setStadt("");
             setLand("");
             setFluss("");
             setTier("");
-            setLocked(false);
+            setIsSubmitted(false);
+
+            // Spieler kann Teilnehmen
+            setWaitingLobby(false);
+
+            //Pausen Ende Status ans Backeend
+            axios
+                .post("http://localhost:8080/api/start", { isPause: false })
+                .catch(err => console.error("Fehler beim Senden des Start Status:", err));
+        };
+
+        // Pausen Anfang ans Backend
+        if (pauseState === false && pause === true) {
+            axios
+                .post("http://localhost:8080/api/end", { isPause: true })
+                .catch((err) =>
+                    console.error("Fehler beim Senden des End Status:", err)
+                );
         }
+
+        //Pause-Status aktualisieren
+        setIsPause(pause);
+        pauseState.current = pause;
+
     };
+
+    //Wartelobby
+
+    if (waitingLobby) {
+        return (
+            <main className="waitingLobby">
+                <h1>Bitte warten,
+                    <Timer />
+                </h1>
+            </main>
+        )
+    }
+
+
     return (
         <main className="content">
             <div className="toolBox">

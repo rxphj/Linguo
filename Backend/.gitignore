@@ -1,4 +1,7 @@
 HELP.md
+.bin
+.lock
+
 .gradle
 .bin
 .lock
@@ -37,3 +40,5 @@ out/
 
 ### VS Code ###
 .vscode/
+
+node_modules/

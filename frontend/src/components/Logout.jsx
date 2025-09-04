@@ -1,9 +1,13 @@
 
-export default function Logout({ stompClient }) {
+export default function Logout({ stompClient, onLogout }) {
 
   const handleLogout = () => {
     if (stompClient) {
-      stompClient.disconnect();
+      stompClient.deactivate();
+    }
+
+    if(onLogout){
+      onLogout();
     }
   };
 

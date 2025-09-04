@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { RadioButton } from 'primereact/radiobutton';
+import { Dialog } from 'primereact/dialog';
 
 
 //function für das Voting, Nicht vorhandene Wörter sollen über ein Poll akzeptiert oder abgelehnt werden
@@ -19,6 +20,12 @@ export default function Voting() {
 
     return (
         <div >
+             {/*<Dialog*
+                                header="Admin Bereich"
+                                visible={visible}
+                                className='admin-dialog'
+                                onHide={onHide}
+                            >*/}
 
             <p className='poll'>{wordForPoll} als gültig akzeptieren?</p>
             <div className='radioButtonJa'>
@@ -40,9 +47,10 @@ export default function Voting() {
                 <label htmlFor="no">Nein</label>
                 {vote && <p>Du hast abgestimmt: {vote === "yes" ? "Yes ✅" : "No ❌"}</p>}
             </div>
-
+            {/*</Dialog>*/}
 
         </div>
+
     )
 
 

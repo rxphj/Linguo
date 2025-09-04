@@ -1,62 +1,62 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { RadioButton } from 'primereact/radiobutton';
 import { Dialog } from 'primereact/dialog';
+import axios from 'axios';
 
-
-//function für das Voting, Nicht vorhandene Wörter sollen über ein Poll akzeptiert oder abgelehnt werden
-export default function Voting() {
-
-    const [voted, setVoted] = useState(false);
+export default function Voting({ visible, word, type, onClose }) {
     const [vote, setVote] = useState("");
+    const [voted, setVoted] = useState(false);
 
-    const wordForPoll = "DiesIstEinTestWort";
-
-    const takeVote = (value) => {
-
-        if (voted) return;
+    useEffect(() => {
+        if (!visible) {
+            setVote("");
+            setVoted(false);
+        }
+    }, [visible]);
+    const handleVote = async (value) => {
+        if (voted || !word) return;
         setVote(value);
         setVoted(true);
-    }
+
+        try {
+            await axios.post('/api/check/wort', {
+                wort: word,
+                type: type,
+                accepted: value === "yes"
+            });
+            onClose();
+        } catch (err) {
+            console.error("Fehler beim Senden des Votes:", err);
+        }
+    };
+
+
+    if (!word) return null;
 
     return (
-        <div >
-             {/*<Dialog*
-                                header="Admin Bereich"
-                                visible={visible}
-                                className='admin-dialog'
-                                onHide={onHide}
-                            >*/}
-
-            <p className='poll'>{wordForPoll} als gültig akzeptieren?</p>
-            <div className='radioButtonJa'>
+        <Dialog header="Wort prüfen" visible={visible} onHide={onClose}>
+            <p>{type}: {word} als gültig akzeptieren?</p>
+            <div>
                 <RadioButton
                     inputId="yes"
                     name="vote"
                     value="yes"
-                    onChange={(e) => takeVote("yes")}
+                    onChange={() => handleVote("yes")}
                     checked={vote === "yes"}
                 />
                 <label htmlFor="yes">Ja</label>
+
                 <RadioButton
                     inputId="no"
                     name="vote"
                     value="no"
-                    onChange={(e) => takeVote("no")}
+                    onChange={() => handleVote("no")}
                     checked={vote === "no"}
                 />
                 <label htmlFor="no">Nein</label>
-                {vote && <p>Du hast abgestimmt: {vote === "yes" ? "Yes ✅" : "No ❌"}</p>}
+
+                {vote && <p>Du hast abgestimmt: {vote === "yes" ? "Ja ✅" : "Nein ❌"}</p>}
             </div>
-            {/*</Dialog>*/}
-
-        </div>
-
-    )
-
-
-
-
-
-
-
+        </Dialog>
+    );
 }

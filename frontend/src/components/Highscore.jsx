@@ -5,6 +5,7 @@ import axios from "axios";
 export function Highscore({ visible, onHide }) {
 
     const [score, setScore] = useState([]);
+    const [personalScore, setPersonalScore] = useState(null);
 
     useEffect(() => {
         if (visible) {
@@ -13,9 +14,12 @@ export function Highscore({ visible, onHide }) {
             axios.get("http://localhost:8080/api/highscore")
                 .then(res => setScore(res.data))
                 .catch(err => console.error("Fehler beim Laden der Highscore:", err));
+
+            axios.get("http://localhost:8080/api/highscore/actualuser")
+                .then(res => setPersonalScore(res.data))
+                .catch(err => console.error(err));
         }
     }, [visible])
-
 
 
 
@@ -37,6 +41,14 @@ export function Highscore({ visible, onHide }) {
                             </li>
                         ))}
                     </ul>
+                )}
+            </div>
+
+            <div>
+                {personalScore ? (
+                    <>Deine bisher beste Punktzahl: {personalScore.score} Punkte</>
+                ) : (
+                    <>Aktuell kein Highscore vorhanden</>
                 )}
             </div>
         </Dialog>

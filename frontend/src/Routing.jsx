@@ -9,6 +9,12 @@ export default function Routing() {
         return saved ? JSON.parse(saved) : null;
     });
 
+    /* Testdaten
+    const [user, setUser] = useState({
+  name: "TestUser",
+  role: "admin", // oder "admin"
+});*/
+
 
     useEffect(() => {
         if (user) {

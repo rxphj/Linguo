@@ -23,6 +23,7 @@ export default function Content() {
   const [votingType, setVotingType] = useState(null);
 
 
+  //Abgfrage aus dem Backend, ob die Runde aktuell läuft
   useEffect(() => {
     axios
       .get("http://localhost:8080/api/session/currentstate")
@@ -30,7 +31,11 @@ export default function Content() {
         const currentPause = res.data.isPause;
         setIsPause(currentPause);
         pauseState.current = currentPause;
-
+        if(res.data=== "ACTIVE"){
+          isPause= false;
+        }else{
+          isPause= true;
+        }
         // Falls Spiel gerade läuft → Spieler muss warten
         if (!currentPause) {
           setWaitingLobby(true);
@@ -90,7 +95,7 @@ export default function Content() {
     };
 
     // Pausen Anfang ans Backend
-    if (pauseState === false && pause === true) {
+    if (checkPause === false && pause === true) {
       axios
         .post("http://localhost:8080/api/session/end", { isPause: true })
         .catch((err) =>

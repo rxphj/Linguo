@@ -5,13 +5,11 @@ import axios from "axios";
 export default function Navbar() {
 
     const [showDialog, setShowDialog] = useState(false);
-    const [teilnehmer, setTeilnehmer] = useState([{ name: "Alice" },
-    { name: "Bob" },
-    { name: "Charlie" }]);
+    const [teilnehmer, setTeilnehmer] = useState([]);
 
     useEffect(() => {
         const fetchTeilnehmer = () => {
-            axios.get("http://localhost:8080/api/teilnehmer")
+            axios.get("http://localhost:8080/api/read/user")
                 .then(res => setTeilnehmer(res.data))
                 .catch(err => console.error(err));
         };

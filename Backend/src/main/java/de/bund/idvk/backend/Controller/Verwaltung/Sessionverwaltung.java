@@ -2,6 +2,7 @@ package de.bund.idvk.backend.Controller.Verwaltung;
 
 import com.nimbusds.oauth2.sdk.http.HTTPResponse;
 import de.bund.idvk.backend.Model.Benutzer;
+import de.bund.idvk.backend.Model.DTOs.LoginBenutzerDTO;
 import de.bund.idvk.backend.Model.Enums.State;
 import de.bund.idvk.backend.Model.Repository.UserRepository;
 import de.bund.idvk.backend.Model.System.Systempreference;
@@ -19,22 +20,20 @@ public class Sessionverwaltung {
     UserRepository userRepository;
     BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
     @PostMapping("/login")
-    public ResponseEntity<Boolean> login(@RequestBody Benutzer loginRequest) {
-        boolean found = false;
-
+    public ResponseEntity<LoginBenutzerDTO> login(@RequestBody Benutzer loginRequest) {
         String username = loginRequest.getUsername();
         String password = loginRequest.getPassword();
-
+        LoginBenutzerDTO loginBenutzerDTO= null;
         for (Benutzer user : userRepository.findAll()) {
             if (user.getUsername().equals(username)) {
                 if (bCryptPasswordEncoder.matches(password, user.getPassword())) {
-                    found = true;
+                    loginBenutzerDTO= new LoginBenutzerDTO(user,true);
                     break;
                 }
             }
         }
 
-        return ResponseEntity.ok(found);
+        return ResponseEntity.ok(loginBenutzerDTO);
     }
 
     @PostMapping("/start")

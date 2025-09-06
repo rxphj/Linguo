@@ -22,7 +22,7 @@ public class Userverwaltung {
     @PostMapping("/create/user")
     public ResponseEntity<?>createuser(@RequestBody Benutzer benutzer){
         benutzer.setPassword(encoder.encode(benutzer.getPassword()));
-        return ResponseEntity.ok().body(userRepository.save(benutzer));
+        return ResponseEntity.ok().body(userRepository.createBenutzer(benutzer));
     }
     @GetMapping("/read/user")
     public List<Benutzer> readuser(){

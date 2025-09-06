@@ -3,7 +3,7 @@ export default function Logout({ stompClient, onLogout }) {
 
   const handleLogout = () => {
     if (stompClient) {
-      stompClient.deactivate();
+      stompClient.disable();
     }
 
     if(onLogout){

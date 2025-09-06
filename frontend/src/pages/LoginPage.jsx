@@ -10,7 +10,6 @@ export default function LoginPage({ onLoginSuccess }) {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [stompClient, setStompClient] = useState(null);
-
     // WebSocket-Verbindung aufbauen
     useEffect(() => {
         const socket = new SockJS('http://localhost:8080/ws');
@@ -49,14 +48,14 @@ export default function LoginPage({ onLoginSuccess }) {
     const handleLogin = async () => {
         setError('');
         try {
-            const res = await axios.post("http://localhost:3001/api/login", {
+            const res = await axios.post("http://localhost:8080/api/session/login", {
                 username,
                 password
-            });
-
+            })
             console.log("Login erfolgreich:", res.data);
             handleRegister(); // WebSocket-Registrierung
             onLoginSuccess(res.data); // User an Routing weitergeben
+
 
         } catch (err) {
             console.error("Login-Fehler:", err.response || err);

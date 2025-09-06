@@ -17,7 +17,7 @@ public class UserRepository {
     public UserRepository(JdbcTemplate jdbctemplate) {
         this.jdbctemplate = jdbctemplate;
     }
-    public Benutzer save(Benutzer b){
+    public Benutzer createBenutzer(Benutzer b){
         String sql = "INSERT INTO Benutzer (username, password, rolle) VALUES (?,?,?)";
         jdbctemplate.update(sql, b.getUsername(), b.getPassword(), b.getRolle());
         benutzer.add(b);

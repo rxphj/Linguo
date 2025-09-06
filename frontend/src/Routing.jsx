@@ -27,7 +27,7 @@ export default function Routing() {
 
     if (!user) return <LoginPage onLoginSuccess={handleLoginSuccess} />;
 
-    if (user.role === 'admin') return <AdminPage />;
+    if (user.role === 'Admin') return <AdminPage />;
 
     return <GamePage />;//
 }

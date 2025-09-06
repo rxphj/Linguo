@@ -25,7 +25,7 @@ export default function Content() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:8080/api/currentstate")
+      .get("http://localhost:8080/api/session/currentstate")
       .then((res) => {
         const currentPause = res.data.isPause;
         setIsPause(currentPause);
@@ -85,14 +85,14 @@ export default function Content() {
 
       //Pausen Ende Status ans Backeend
       axios
-        .post("http://localhost:8080/api/start", { isPause: false })
+        .post("http://localhost:8080/api/session/start", { isPause: false })
         .catch(err => console.error("Fehler beim Senden des Start Status:", err));
     };
 
     // Pausen Anfang ans Backend
     if (pauseState === false && pause === true) {
       axios
-        .post("http://localhost:8080/api/end", { isPause: true })
+        .post("http://localhost:8080/api/session/end", { isPause: true })
         .catch((err) =>
           console.error("Fehler beim Senden des End Status:", err)
         );

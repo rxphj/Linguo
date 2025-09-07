@@ -1,8 +1,7 @@
-// LoginPage.js
+import React, { useState } from 'react';
 import { Button } from 'primereact/button';
-import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import SockJS from 'sockjs-client';
-import axios from "axios";
 import { Client } from '@stomp/stompjs';
 
 export default function LoginPage({ onLoginSuccess }) {
@@ -11,56 +10,29 @@ export default function LoginPage({ onLoginSuccess }) {
     const [error, setError] = useState('');
     const [stompClient, setStompClient] = useState(null);
 
-    // WebSocket-Verbindung aufbauen
-    useEffect(() => {
+    const initWebSocket = () => {
         const socket = new SockJS('http://localhost:8080/ws');
         const client = new Client({
             webSocketFactory: () => socket,
             reconnectDelay: 5000,
-            onConnect: () => {
-                console.log('✅ WebSocket verbunden');
-            },
-            onStompError: (frame) => {
-                console.error('❌ STOMP Fehler:', frame);
-            }
+            onConnect: () => console.log('✅ WebSocket verbunden'),
+            onStompError: (frame) => console.error('❌ STOMP Fehler:', frame),
         });
-
         client.activate();
         setStompClient(client);
-
-        return () => client.deactivate();
-    }, []);
-
-    // Registrierung über WebSocket senden
-    const handleRegister = () => {
-        if (stompClient && stompClient.connected) {
-            const user = { username };
-            stompClient.publish({
-                destination: '/app/register',
-                body: JSON.stringify(user),
-            });
-            console.log("📤 Registrierung gesendet:", user);
-        } else {
-            console.warn("❌ STOMP nicht verbunden");
-        }
     };
 
-    // Login über Axios direkt
     const handleLogin = async () => {
         setError('');
         try {
-            const res = await axios.post("http://localhost:8080/api/sesseion/login", {
-                username,
-                password
-            });
-
-            console.log("Login erfolgreich:", res.data);
-            handleRegister(); // WebSocket-Registrierung
-            onLoginSuccess(res.data); // User an Routing weitergeben
-
+            const res = await axios.post(
+                'http://localhost:8080/api/session/login',
+                { username, password },
+            );
+            initWebSocket();
+            onLoginSuccess(res.data);
         } catch (err) {
-            console.error("Login-Fehler:", err.response || err);
-            setError(err.response?.data?.message || "Login fehlgeschlagen");
+            setError('Login fehlgeschlagen');
         }
     };
 
@@ -71,18 +43,16 @@ export default function LoginPage({ onLoginSuccess }) {
                 <input
                     placeholder="Benutzername"
                     value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    required
-                /> <br />
+                    onChange={e => setUsername(e.target.value)}
+                /><br />
                 <input
                     placeholder="Passwort"
                     type="password"
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                /> <br />
+                    onChange={e => setPassword(e.target.value)}
+                /><br />
                 <Button onClick={handleLogin}>Login</Button>
-                {error && <p style={{ color: 'red' }}>{error}</p>}
+                {error && <p style={{color:'red'}}>{error}</p>}
             </div>
         </div>
     );

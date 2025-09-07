@@ -1,48 +1,27 @@
 import { useState, useEffect } from 'react';
+import axios from 'axios';
 import LoginPage from './pages/LoginPage';
 import GamePage from './pages/GamePage';
-import AdminPage from './pages/AdminPage';
 
 export default function Routing() {
-    const [user, setUser] = useState(() => {
-        const saved = localStorage.getItem('user');
-        return saved ? JSON.parse(saved) : null;
-    });
-
-    /* Testdaten
-    const [user, setUser] = useState({
-  name: "TestUser",
-  role: "admin", // oder "admin"
-});*/
-
+    const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        if (user) {
-            localStorage.setItem('user', JSON.stringify(user));
-        }
-    }, [user]);
+        axios.get('http://localhost:8080/api/session/me', { withCredentials: true })
+            .then(res => setUser(res.data.username ? res.data : null))
+            .catch(() => setUser(null))
+            .finally(() => setLoading(false));
+    }, []);
 
-    const handleLoginSuccess = (userData) => {
-        setUser(userData);
-    };
-
+    const handleLoginSuccess = (userData) => setUser(userData);
     const handleLogout = () => {
-        localStorage.removeItem('user');
-        setUser(null);
+        axios.post('http://localhost:8080/api/session/logout', {}, { withCredentials: true })
+            .finally(() => setUser(null));
     };
 
+    if (loading) return <p>Loading...</p>;
     if (!user) return <LoginPage onLoginSuccess={handleLoginSuccess} />;
 
-    if (user.role === 'Admin') return <AdminPage />;
-
-    return <GamePage />;//
+    return <GamePage onLogout={handleLogout} />;
 }
-
-
-
-
-
-
-
-
-

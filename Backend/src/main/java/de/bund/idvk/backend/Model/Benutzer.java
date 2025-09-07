@@ -16,6 +16,16 @@ public class Benutzer {
     private String password;
     private int score;
 
+    public Benutzer() {
+    }
+
+    public Benutzer(long id, Rolle rolle, String username, String password ) {
+        this.id = id;
+        this.rolle = rolle;
+        this.username = username;
+        this.password = password;
+    }
+
     public void setId(long id) {
         this.id = id;
     }

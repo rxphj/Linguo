@@ -2,70 +2,32 @@ package de.bund.idvk.backend.Model.Repository;
 
 import de.bund.idvk.backend.Model.Benutzer;
 import de.bund.idvk.backend.Model.Enums.Rolle;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@EnableJpaRepositories
 @Repository
-public class UserRepository {
-    List <Benutzer> benutzer = new ArrayList<>();
+public interface UserRepository extends JpaRepository<Benutzer, Long> {
 
-     private final JdbcTemplate jdbctemplate;
+    @Modifying
+    @Query("INSERT INTO Benutzer (username, password, rolle) VALUES(:id,:password,:rolle)")
+    void createBenutzer(String username, String password, Rolle rolle);
 
-    public UserRepository(JdbcTemplate jdbctemplate) {
-        this.jdbctemplate = jdbctemplate;
-    }
-    public Benutzer createBenutzer(Benutzer b){
-        String sql = "INSERT INTO Benutzer (username, password, rolle) VALUES (?,?,?)";
-        jdbctemplate.update(sql, b.getUsername(), b.getPassword(), b.getRolle());
-        benutzer.add(b);
-        return b;
-    }
-    public List<Benutzer> findAll() {
-        benutzer.clear();
-        String sql = "SELECT id,username, password, rolle FROM benutzer";
-        return jdbctemplate.query(sql, (rs, rowNum) -> {
-            Benutzer benutzer = new Benutzer();
-            benutzer.setId(rs.getLong(rs.findColumn("id")));
-            benutzer.setUsername(rs.getString("username"));
-            benutzer.setPassword(rs.getString("password"));
-            benutzer.setRolle(Rolle.valueOf(rs.getString("rolle")));
-            return benutzer;
-        });
-    }
-    public boolean delete(long id){
-        boolean deleted= false;
-        String sql = "DELETE FROM Benutzer WHERE id = (?)";
-        jdbctemplate.update(sql, id);
-        for(Benutzer b : findAll()){
-            if(b.getId() == id){
-                benutzer.remove(b);
-                deleted = true;
-            }
-        }
-        return deleted;
-    }
-    public Benutzer update(Benutzer b){
-        String sql ="UPDATE Benutzer SET rolle = (?) AND  username= (?) AND rolle =(?) AND score = (?)  WHERE id = (?)";
-        jdbctemplate.update(sql, b.getRolle(), b.getUsername(), b.getRolle(), b.getScore(),  b.getId());
-        for(int i=0; i < benutzer.size(); i++){
-            if(benutzer.get(i).getId()== b.getId()){
-                benutzer.remove(i);
-            }
-        }
-        benutzer.add(b);
-        return b;
-    }
-    public Benutzer findById(long id){
-        Benutzer b = new Benutzer();
-        for (Benutzer benutzer : findAll()){
-            if(benutzer.getId() == id){
-                b = benutzer;
-            }
-        }
-        return b;
-    }
+    @Query("SELECT new Benutzer(e.id, e.rolle, e.username, e.password) FROM Benutzer e")
+    List<Benutzer> findAll();
+
+    @Modifying
+    @Query("DELETE FROM Benutzer WHERE id = :id")
+    boolean delete(long id);
+
+    @Query("SELECT username, password, rolle from Benutzer WHERE username = :username")
+    Benutzer findByUsername(String username);
 
 }

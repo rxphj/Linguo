@@ -22,7 +22,8 @@ public class Userverwaltung {
     @PostMapping("/create/user")
     public ResponseEntity<?>createuser(@RequestBody Benutzer benutzer){
         benutzer.setPassword(encoder.encode(benutzer.getPassword()));
-        return ResponseEntity.ok().body(userRepository.createBenutzer(benutzer));
+        userRepository.createBenutzer(benutzer.getUsername(),benutzer.getPassword(),benutzer.getRolle());
+        return ResponseEntity.ok().build();
     }
     @GetMapping("/read/user")
     public List<Benutzer> readuser(){
@@ -32,12 +33,9 @@ public class Userverwaltung {
     public ResponseEntity<Boolean>deleteuser(@PathVariable long id){
         return ResponseEntity.ok().body(userRepository.delete((id)));
     }
-    @PutMapping("/update/user")
-    public ResponseEntity<?>updateuser(@RequestBody Benutzer benutzer){
-        return ResponseEntity.ok().body(userRepository.update(benutzer));
-    }
-    @GetMapping("/read/user/by/id/{id}")
-    public ResponseEntity<Benutzer> readuserbyid(@PathVariable long id){
-        return ResponseEntity.ok().body(userRepository.findById(id));
+
+    @GetMapping("/read/user/by/id/{username}")
+    public ResponseEntity<Benutzer> readuserbyid(@PathVariable String username){
+        return ResponseEntity.ok().body(userRepository.findByUsername(username));
     }
 }

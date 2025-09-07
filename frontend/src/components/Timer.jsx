@@ -1,51 +1,49 @@
 import { ProgressBar } from 'primereact/progressbar';
 import { useEffect, useState } from "react";
-import CurrentLetter from './CurrentLetter';
-import axios from "axios";
 
-export default function Timer({onTimerState}) {
-  const [timeLeft, setTimeLeft] = useState(60);
-  const [isPause, setIsPause] = useState(false);
-  
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setTimeLeft(t => t - 1);
-    }, 1000);
+export default function Timer({ onTimerState }) {
+    const ROUND_TIME = 60;
+    const PAUSE_TIME = 30;
 
-    return () => clearInterval(interval);
-  }, []);
+    const [timeLeft, setTimeLeft] = useState(ROUND_TIME);
+    const [isPause, setIsPause] = useState(false);
 
-  useEffect(() => {
-    if (timeLeft <= 0) {
-      if (!isPause) {
-        // Pause starten
-        setIsPause(true);
-        setTimeLeft(30);
-      } else {
-        setIsPause(false);
-        setTimeLeft(60);
-
-        if(onTimerState){
-          onTimerState(false);
-        }
-
-      }
-    }
-  }, [timeLeft, isPause]);
     useEffect(() => {
-    if (onTimerState) {
-      onTimerState(isPause);
-    }
-  }, [isPause, onTimerState]);
+        const interval = setInterval(() => {
+            setTimeLeft((prev) => prev - 1);
+        }, 1000);
 
- 
-  return (
-    <div>
-      <p>{isPause ? "Pause: " : "Aktuelle Runde läuft: "} {timeLeft} Sekunden</p>
-      <ProgressBar
-        value={isPause ? (timeLeft / 30) * 100 : (timeLeft / 60) * 100}
-        showValue={false}
-      />
-    </div>
-  );
+        return () => clearInterval(interval);
+    }, []);
+
+    useEffect(() => {
+        if (timeLeft <= 0) {
+            // Warten auf nächsten Tick, um State stabil zu halten
+            setTimeout(() => {
+                if (!isPause) {
+                    // Runde ist vorbei → Pause beginnt
+                    setIsPause(true);
+                    setTimeLeft(PAUSE_TIME);
+                    console.log("Timer → Runde vorbei → Pause startet");
+                    onTimerState?.(true); // signalisiere "Pause"
+                } else {
+                    // Pause ist vorbei → Neue Runde beginnt
+                    setIsPause(false);
+                    setTimeLeft(ROUND_TIME);
+                    console.log("Timer → Pause vorbei → Neue Runde startet");
+                    onTimerState?.(false); // signalisiere "Spiel läuft"
+                }
+            }, 0);
+        }
+    }, [timeLeft]); // nur timeLeft als Abhängigkeit!
+
+    return (
+        <div>
+            <p>{isPause ? "Pause: " : "Runde läuft: "} {timeLeft} Sekunden</p>
+            <ProgressBar
+                value={isPause ? (timeLeft / PAUSE_TIME) * 100 : (timeLeft / ROUND_TIME) * 100}
+                showValue={false}
+            />
+        </div>
+    );
 }

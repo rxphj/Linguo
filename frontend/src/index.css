@@ -34,11 +34,11 @@ body {
 }
 
 .rechts button {
-  height: 40px;         
-  min-width: 120px;     
-  padding: 0 1rem;      
-  font-size: 1.2rem;    
-  border-radius: 8px;   
+  height: 40px;
+  min-width: 120px;
+  padding: 0 1rem;
+  font-size: 1.2rem;
+  border-radius: 8px;
  transform: translate(-30px, 30px);
 }
 
@@ -168,7 +168,7 @@ footer div {
 
   display: flex;
   align-items: center;
-  
+
 }
 
 .toolBox {
@@ -182,10 +182,10 @@ footer div {
 }
 
 .waitingLobby {
-  display: flex;          
-  align-items: center;    
-  justify-content: center; 
-  height: 100vh;          
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
 }
 
 .poll{
@@ -263,7 +263,7 @@ footer div {
     transform: none; /* bessere Position auf Handy */
     margin: 0.5rem auto; /* zentriert */
   }
-  
+
   .layout {
     grid-template-columns: 1fr;
     grid-template-rows: auto auto 1fr auto auto;

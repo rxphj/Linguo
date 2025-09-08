@@ -3,11 +3,15 @@ package de.bund.idvk.backend.Model;
 import de.bund.idvk.backend.Model.Enums.Rolle;
 import jakarta.persistence.*;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
 
 @Table
 @Entity
 
-public class Benutzer {
+public class Benutzer implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -18,7 +22,15 @@ public class Benutzer {
 
     public Benutzer() {
     }
+    @Transient
+    List<Benutzer> benutzer= new ArrayList<>();
 
+    public void add(Benutzer benutzer) {
+        this.benutzer.add(benutzer);
+    }
+    public List<Benutzer> getBenutzer() {
+        return benutzer;
+    }
     public Benutzer(long id, Rolle rolle, String username, String password ) {
         this.id = id;
         this.rolle = rolle;

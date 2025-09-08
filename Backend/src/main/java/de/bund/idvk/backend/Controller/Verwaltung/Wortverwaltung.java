@@ -27,12 +27,10 @@ public class Wortverwaltung {
     public ResponseEntity<?>readwortbyobject(@RequestBody Wort wort){
         return ResponseEntity.ok().body(wortRepo.findByObject(wort));
     }
-    //http://localhost:8080/api/remove/wort
     @DeleteMapping("/remove/wort")
     public ResponseEntity<?> removewort(@RequestBody Wort wort){
         return ResponseEntity.ok().body(wortRepo.delete(wort));
     }
-    //http://localhost:8080/api/update/wort
     @PutMapping("/update/wort")
     public ResponseEntity<?> updatewort(@RequestBody Wort wort){
         return ResponseEntity.ok().body(wortRepo.update(wort));

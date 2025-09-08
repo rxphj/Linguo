@@ -1,27 +1,42 @@
-// src/pages/GamePage.jsx
-import React from "react";
+import { useState } from "react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import Content from "../components/Content";
 import ShowPoints from "../components/ShowPoints";
+import Logout from "../components/Logout.jsx";
 
-export default function GamePage({ onLogout }) {
+export default function GamePage() {
+    const [score, setScore] = useState(0);
+    const [points, setPoints] = useState([]);
+
+    // Callback-Funktion um Score von Content zu erhalten
+    const handleUpdateScore = (newScore) => {
+        setScore(newScore);
+        console.log("Neuer Score:", newScore);
+    };
+
+    // Funktion um Punkte-Liste zu aktualisieren (falls benötigt)
+    const updatePoints = (newPoints) => {
+        setPoints(newPoints);
+    };
+
     return (
         <div className="layout">
-            <Header adminlogo={false} />
-            <Navbar bottomContent="Highscore" />
+            <Header adminlogo={false}/>
+            <Navbar bottomContent="Highscore"/>
 
-            <main className="game-main">
-                <Content />
-                <ShowPoints adminAdd={false} />
-            </main>
+            {/* Content mit Score-Callback */}
+            <Content onUpdateScore={handleUpdateScore} />
+
+            {/* ShowPoints mit aktuellen Score und Punkten */}
+            <ShowPoints
+                adminAdd={false}
+                score={score}
+                points={points}
+            />
 
             <Footer />
-
-            <button className="logout-button" onClick={onLogout}>
-                Logout
-            </button>
         </div>
     );
 }

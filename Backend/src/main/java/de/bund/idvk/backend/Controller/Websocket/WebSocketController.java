@@ -1,14 +1,15 @@
 package de.bund.idvk.backend.Controller.Websocket;
 
-import de.bund.idvk.backend.Model.Benutzer;
 import de.bund.idvk.backend.Model.Enums.State;
-import de.bund.idvk.backend.Model.System.SpielState;
+import de.bund.idvk.backend.Model.Systempreference;
+import de.bund.idvk.backend.Model.Service.BenutzerService;
+import de.bund.idvk.backend.Model.Service.LetterService;
+import jakarta.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -16,48 +17,67 @@ import java.util.TimerTask;
 public class WebSocketController {
 
     private final SimpMessagingTemplate simpMessagingTemplate;
-    private final List<Benutzer> registeredUsers = new ArrayList<>();
-    private boolean timerRunning = false;
-    private Timer timer;
-    private int timeLeft;
-    private final int ROUND_DURATION = 60;
-    private final int PAUSE_DURATION = 30;
-    private State gameState = State.PAUSE;
+    @Autowired
+    private  LetterService letterService;
+    @Autowired
+    private  BenutzerService benutzerService; // Korrekt injiziert
+
+    private State sessionState = State.INACTIVE;
+    private int timerSeconds = 30;
 
     public WebSocketController(SimpMessagingTemplate simpMessagingTemplate) {
         this.simpMessagingTemplate = simpMessagingTemplate;
+
     }
 
-    @MessageMapping("/register")
-    public void register(Benutzer benutzer) {
-        registeredUsers.add(benutzer);
-        simpMessagingTemplate.convertAndSend("/topic/register", benutzer);
-
-        if (!timerRunning) startGameLoop();
-    }
-
-    private void startGameLoop() {
-        gameState = State.ACTIVE;
-        timerRunning = true;
-        timeLeft = ROUND_DURATION;
-
-        timer = new Timer();
+    @PostConstruct
+    public void startServerTimer() {
+        Timer timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                timeLeft--;
-                simpMessagingTemplate.convertAndSend("/topic/state", new SpielState(gameState, timeLeft));
+                timerSeconds--;
 
-                if (timeLeft <= 0) {
-                    if (gameState == State.ACTIVE) {
-                        gameState = State.PAUSE;
-                        timeLeft = PAUSE_DURATION;
+                if (timerSeconds <= 0) {
+                    if (sessionState == State.ACTIVE) {
+                        sessionState = State.INACTIVE;
+                        timerSeconds = 10; // Pause
                     } else {
-                        gameState = State.ACTIVE;
-                        timeLeft = ROUND_DURATION;
+                        sessionState = State.ACTIVE;
+                        timerSeconds = 60; // Neue Runde
+                        char neuerBuchstabe = letterService.generateNewLetter();
+                        simpMessagingTemplate.convertAndSend("/topic/buchstabe",
+                                String.valueOf(neuerBuchstabe).toUpperCase());
                     }
                 }
+
+                simpMessagingTemplate.convertAndSend("/topic/session",
+                        new Systempreference(sessionState.name(), timerSeconds));
             }
         }, 0, 1000);
+    }
+
+    @MessageMapping("/session/init")
+    public void initSession() {
+        simpMessagingTemplate.convertAndSend("/topic/session",
+                new Systempreference(sessionState.name(), timerSeconds));
+    }
+
+    @MessageMapping("/session/buchstabe")
+    public void getBuchstabe() {
+        char currentLetter = letterService.getCurrentLetter();
+        simpMessagingTemplate.convertAndSend("/topic/buchstabe",
+                String.valueOf(currentLetter).toUpperCase());
+    }
+
+    @MessageMapping("/session/benutzer")
+    public void showRegisteredBenutzer() {
+        if (benutzerService != null && benutzerService.getRegistered() != null && !benutzerService.getRegistered().isEmpty()) {
+            System.out.println(benutzerService.getRegistered().getFirst().getUsername());
+            simpMessagingTemplate.convertAndSend("/topic/benutzer", benutzerService.getRegistered());
+        } else {
+            System.out.println("Keine registrierten Benutzer verfügbar");
+            simpMessagingTemplate.convertAndSend("/topic/benutzer", "[]"); // Leeres Array senden
+        }
     }
 }

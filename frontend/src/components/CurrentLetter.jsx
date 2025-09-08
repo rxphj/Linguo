@@ -1,31 +1,37 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import SockJS from "sockjs-client";
+import { Client } from '@stomp/stompjs';
 
-export default function CurrentLetter({ isPause }) {
+export default function CurrentLetter() {
     const [letter, setLetter] = useState("");
 
-    // beim ersten Render sofort Buchstaben holen
     useEffect(() => {
-        fetchLetter();
+        let client; // Variable außerhalb des Client-Objekts
+
+        const socket = new SockJS('http://localhost:8080/ws');
+        client = new Client({
+            webSocketFactory: () => socket,
+            reconnectDelay: 5000,
+            onConnect: () => {
+                client.subscribe('/topic/buchstabe', (message) => {
+                    const newLetter = message.body;
+                    setLetter(newLetter);
+                });
+                client.publish({
+                    destination: '/app/session/buchstabe'
+                });
+            },
+
+        });
+
+        client.activate();
+
+        return () => {
+            if (client) {
+                client.deactivate();
+            }
+        };
     }, []);
 
-    // immer wenn eine neue Runde startet (Pause -> false)
-    useEffect(() => {
-        if (isPause === false) {
-            fetchLetter();
-        }
-    }, [isPause]);
-
-    const fetchLetter = () => {
-        axios.get("http://localhost:8080/api/generate/buchstabe")
-            .then((res) => {
-                setLetter(res.data);
-                console.log("Buchstabe vom Backend:", res.data);
-            })
-            .catch((error) => {
-                console.error("Fehler beim Abrufen des Buchstabens:", error);
-            });
-    };
-
-    return <>{letter || "-"}</>;
+    return <>{letter.toUpperCase() || "-"}</>;
 }

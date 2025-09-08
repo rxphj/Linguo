@@ -1,72 +1,114 @@
 package de.bund.idvk.backend.Controller.Verwaltung;
 
-import com.nimbusds.oauth2.sdk.http.HTTPResponse;
 import de.bund.idvk.backend.Model.Benutzer;
-import de.bund.idvk.backend.Model.DTOs.LoginBenutzerDTO;
-import de.bund.idvk.backend.Model.Enums.State;
 import de.bund.idvk.backend.Model.Repository.UserRepository;
-import de.bund.idvk.backend.Model.System.Systempreference;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
+import de.bund.idvk.backend.Model.Service.BenutzerService;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
-
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 @RestController
-@CrossOrigin
+@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 @RequestMapping("/api/session")
 public class Sessionverwaltung {
-    private final Systempreference systempreference= new
-            Systempreference();
+
     @Autowired
     UserRepository userRepository;
+
     BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+    @Autowired
+    BenutzerService benutzerService;
+    private static final Map<String, Map<String, Object>> sessionStore = new ConcurrentHashMap<>();
 
     @PostMapping("/login")
-    public Map<String, Object> login(@RequestBody Map<String, String> body, HttpServletRequest request) {
-        String username = body.get("username");
-        String password = body.get("password");
+    public ResponseEntity<?> login(@RequestBody Benutzer body, HttpServletResponse response) {
+        Map<String, Object> result = new HashMap<>();
 
-         Benutzer b= userRepository.findByUsername(username);
+        Benutzer b = userRepository.findByUsername(body.getUsername());
+        if(b!=null){
+            benutzerService.registerUser(body);
+        }
 
-         if(b!=null){
-             if(b.getPassword().equals(bCryptPasswordEncoder.encode(password))){
-                 request.getSession(true).setAttribute("user",b);
-             }
-         }
-        throw new RuntimeException("Login fehlgeschlagen");
+        if (b != null && bCryptPasswordEncoder.matches(body.getPassword(), b.getPassword())) {
+            // Session ID generieren
+            String sessionId = UUID.randomUUID().toString();
+
+            // Session in eigenem Store speichern
+            Map<String, Object> sessionData = new HashMap<>();
+            sessionData.put("username", b.getUsername());
+            sessionData.put("userId", b.getId());
+            sessionData.put("role", b.getRolle());
+            sessionStore.put(sessionId, sessionData);
+
+            Cookie sessionCookie = new Cookie("SESSIONID", sessionId);
+            sessionCookie.setHttpOnly(true);
+            sessionCookie.setMaxAge(30 * 60); // 30 Minuten
+            sessionCookie.setPath("/");
+            response.addCookie(sessionCookie);
+
+            result.put("username", b.getUsername());
+            result.put("role", b.getRolle());
+
+            return ResponseEntity.ok(result);
+        }
+
+        result.put("success", false);
+        result.put("error", "Login fehlgeschlagen");
+        return ResponseEntity.status(401).body(result);
     }
+
     @GetMapping("/me")
-    public Object me(HttpServletRequest request) {
-        Object user = request.getSession(false) != null ? request.getSession().getAttribute("user") : null;
-        return user != null ? user : Map.of();
+    public ResponseEntity<?> me(@CookieValue(value = "SESSIONID", required = false) String sessionId) {
+        System.out.println("Received sessionId: " + sessionId);
+
+        if (sessionId == null || sessionId.isEmpty()) {
+            return ResponseEntity.status(401).body(Map.of("error", "Keine Session gefunden"));
+        }
+
+        Map<String, Object> sessionData = sessionStore.get(sessionId);
+        if (sessionData == null) {
+            return ResponseEntity.status(401).body(Map.of("error", "Session ungültig"));
+        }
+
+        String username = (String) sessionData.get("username");
+        Benutzer benutzer = userRepository.findByUsername(username);
+
+        if (benutzer != null) {
+            return ResponseEntity.ok(benutzer);
+        }
+
+        return ResponseEntity.status(401).body(Map.of("error", "Benutzer nicht gefunden"));
     }
+
     @PostMapping("/logout")
-    public void logout(HttpServletRequest request) {
-        if (request.getSession(false) != null) request.getSession().invalidate();
+    public ResponseEntity<?> logout(@CookieValue(value = "SESSIONID", required = false) String sessionId,
+                                    HttpServletResponse response) {
+        if (sessionId != null) {
+            sessionStore.remove(sessionId);
+
+            // Cookie löschen
+            Cookie cookie = new Cookie("SESSIONID", null);
+            cookie.setMaxAge(0);
+            cookie.setPath("/");
+            response.addCookie(cookie);
+        }
+
+        return ResponseEntity.ok(Map.of("message", "Erfolgreich ausgeloggt"));
     }
 
-    @PostMapping("/start")
-    public ResponseEntity<?> setstart() {
-        systempreference.setState(State.ACTIVE);
-        return ResponseEntity.ok().body(HTTPResponse.SC_OK);
-    }
-
-    @PostMapping("/end")
-    public ResponseEntity<?> setend() {
-        systempreference.setState(State.INACTIVE);
-        return ResponseEntity.ok().body(HTTPResponse.SC_OK);
-    }
-    @GetMapping("/currentstate")
-    public ResponseEntity<State>getState() {
-        return ResponseEntity.ok().body(systempreference.getState());
+    @GetMapping("/debug")
+    public ResponseEntity<?> debug() {
+        return ResponseEntity.ok(Map.of(
+                "activeSessions", sessionStore.size(),
+                "sessions", sessionStore.keySet()
+        ));
     }
 }

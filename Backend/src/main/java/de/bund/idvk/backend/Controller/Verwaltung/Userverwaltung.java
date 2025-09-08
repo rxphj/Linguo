@@ -1,5 +1,6 @@
 package de.bund.idvk.backend.Controller.Verwaltung;
 
+import de.bund.idvk.backend.Model.Enums.Rolle;
 import de.bund.idvk.backend.Model.Repository.UserRepository;
 import de.bund.idvk.backend.Model.Benutzer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,12 @@ public class Userverwaltung {
     @PostMapping("/create/user")
     public ResponseEntity<?>createuser(@RequestBody Benutzer benutzer){
         benutzer.setPassword(encoder.encode(benutzer.getPassword()));
-        userRepository.createBenutzer(benutzer.getUsername(),benutzer.getPassword(),benutzer.getRolle());
+        if(benutzer.getRolle()==Rolle.Admin){
+            benutzer.setRolle(Rolle.Admin);
+        }else{
+            benutzer.setRolle(Rolle.Benutzer);
+        }
+        userRepository.createBenutzer(benutzer.getUsername(),benutzer.getPassword(), String.valueOf(benutzer.getRolle()));
         return ResponseEntity.ok().build();
     }
     @GetMapping("/read/user")

@@ -1,49 +1,54 @@
 import { ProgressBar } from 'primereact/progressbar';
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
+import SockJS from "sockjs-client";
+import { Client } from "@stomp/stompjs";
 
 export default function Timer({ onTimerState }) {
-    const ROUND_TIME = 60;
-    const PAUSE_TIME = 30;
-
-    const [timeLeft, setTimeLeft] = useState(ROUND_TIME);
-    const [isPause, setIsPause] = useState(false);
+    const [secondsLeft, setSecondsLeft] = useState(0);
+    const [sessionState, setSessionState] = useState("INACTIVE");
+    const timerRef = useRef(null);
 
     useEffect(() => {
-        const interval = setInterval(() => {
-            setTimeLeft((prev) => prev - 1);
-        }, 1000);
+        const socket = new SockJS("http://localhost:8080/ws");
+        const client = new Client({
+            webSocketFactory: () => socket,
+            reconnectDelay: 5000,
+            onConnect: () => {
+                client.publish({ destination: "/app/session/init" });
 
-        return () => clearInterval(interval);
-    }, []);
+                client.subscribe("/topic/session", (message) => {
+                    const status = JSON.parse(message.body);
+                    setSessionState(status.state);
+                    setSecondsLeft(status.seconds);
 
-    useEffect(() => {
-        if (timeLeft <= 0) {
-            // Warten auf nächsten Tick, um State stabil zu halten
-            setTimeout(() => {
-                if (!isPause) {
-                    // Runde ist vorbei → Pause beginnt
-                    setIsPause(true);
-                    setTimeLeft(PAUSE_TIME);
-                    console.log("Timer → Runde vorbei → Pause startet");
-                    onTimerState?.(true); // signalisiere "Pause"
-                } else {
-                    // Pause ist vorbei → Neue Runde beginnt
-                    setIsPause(false);
-                    setTimeLeft(ROUND_TIME);
-                    console.log("Timer → Pause vorbei → Neue Runde startet");
-                    onTimerState?.(false); // signalisiere "Spiel läuft"
-                }
-            }, 0);
-        }
-    }, [timeLeft]); // nur timeLeft als Abhängigkeit!
+                    if (onTimerState) onTimerState(status.state);
+
+                    if (status.state === "ACTIVE" && !timerRef.current) {
+                        timerRef.current = setInterval(() => {
+                            setSecondsLeft(prev => (prev > 0 ? prev - 1 : 0));
+                        }, 1000);
+                    } else if (status.state !== "ACTIVE" && timerRef.current) {
+                        clearInterval(timerRef.current);
+                        timerRef.current = null;
+                    }
+                });
+            },
+        });
+
+        client.activate();
+        return () => {
+            client.deactivate();
+            if (timerRef.current) clearInterval(timerRef.current);
+        };
+    }, [onTimerState]);
+
+    const maxTime = sessionState === "ACTIVE" ? 60 : 30;
 
     return (
         <div>
-            <p>{isPause ? "Pause: " : "Runde läuft: "} {timeLeft} Sekunden</p>
-            <ProgressBar
-                value={isPause ? (timeLeft / PAUSE_TIME) * 100 : (timeLeft / ROUND_TIME) * 100}
-                showValue={false}
-            />
+            <p>{sessionState === "ACTIVE" ? "Aktuelle Runde:" : ""} {secondsLeft} Sekunden
+                <ProgressBar value={(secondsLeft / maxTime) * 100} showValue={false}/>
+            </p>
         </div>
     );
 }

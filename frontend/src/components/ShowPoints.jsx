@@ -1,58 +1,73 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import AdminVerwaltung from "./AdminVerwaltung.jsx";
+import SockJS from "sockjs-client";
+import {Client} from "@stomp/stompjs";
 
-
-
-
-//adminAdd ist ein Prop von AdminPage, zum anzeigen der Adminbilder auf der Admin Seite
-export default function ShowPoints({ adminAdd }) {
-
+export default function ShowPoints({ adminAdd, score, points }) {
     const [showDialog, setShowDialog] = useState(false);
-    const [points, setPoints] = useState([]);
-
+    const [teilnehmer, setTeilnehmer] = useState([]);
+    const [stomp, setStompClient] = useState({});
     useEffect(() => {
-        // Punkte für das aktuelle Spiel 
-        axios.get("http://localhost:8080/api/currentGamePoints") // Pfad anpassen
-            .then(res => setPoints(res.data))
-            .catch(err => console.error("Fehler beim Laden der Punkte:", err));
+        const socket = new SockJS('http://localhost:8080/ws');
+        const client = new Client({
+            webSocketFactory: () => socket,
+            reconnectDelay: 5000,
+            onConnect: () => {
+                client.subscribe('/topic/benutzer', (message) => {
+                    try {
+                        const benutzerListe = JSON.parse(message.body);
+                        setTeilnehmer(benutzerListe);
+                    } catch (error) {
+                        setTeilnehmer([]);
+                    }
+                });
+                client.publish({
+                    destination: '/app/session/benutzer'
+                });
+            },
+
+        });
+
+        client.activate();
+        setStompClient(client);
+
+        return () => {
+            if (client) {
+                client.deactivate();
+            }
+        };
     }, []);
-
-
     return (
-
-
         <aside className="point-section">
-            <div className="points">Punkte</div>
-            {points.length === 0 ? (
-                <p>Keine Punkte vorhanden</p>
-            ) : (
-                <ul>
-                    {points.map((player, index) => (
-                        <li key={index}>
-                            {player.name}: {player.score} Punkte
+            <div className="points">Deine Punkte: {score}</div>
+
+            <ul>
+                {teilnehmer.length > 0 ? (
+                    teilnehmer.map((user, index) => (
+                        <li key={index} className="teilnehmer-item">
+                            <span className="username">{user.username}</span>
+                            <span className ="points"> {teilnehmer.score}</span>
                         </li>
-                    ))}
-                </ul>
-            )}
+                    ))
+                ) : (
+                    <li>Keine Teilnehmer</li>
+                )}
+            </ul>
 
             <div className="adminsection">
-                {adminAdd && <img src="/Adminsection-img.png"
+                {adminAdd && <img
+                    src="/Adminsection-img.png"
                     alt="adminsection-img"
                     className="adminsection_img"
-                    onClick={() => setShowDialog(true)} />}
+                    onClick={() => setShowDialog(true)}
+                />}
             </div>
 
-            <AdminVerwaltung visible={showDialog} onHide={() => setShowDialog(false)} />
-
-
-        </aside >
-
-
-
-
-
-
-    )
-
+            <AdminVerwaltung
+                visible={showDialog}
+                onHide={() => setShowDialog(false)}
+            />
+        </aside>
+    );
 }

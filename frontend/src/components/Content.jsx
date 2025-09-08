@@ -1,131 +1,163 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { InputText } from "primereact/inputtext";
 import CurrentLetter from "./CurrentLetter";
+import Timer from "./Timer";
 import Voting from "./Voting";
-import SpielStateDisplay from "./SpielStateDisplay.jsx";
+import SockJS from "sockjs-client";
+import { Client } from "@stomp/stompjs";
 
-export default function Content() {
+export default function Content({ onUpdateScore }) {
     const [Stadt, setStadt] = useState("");
     const [Land, setLand] = useState("");
     const [Fluss, setFluss] = useState("");
     const [Tier, setTier] = useState("");
-
+    const [user, setUser] = useState(null);
     const [isSubmitted, setIsSubmitted] = useState(false);
-    const [gameState, setGameState] = useState("PAUSE");
-    const [timeLeft, setTimeLeft] = useState(0);
-
+    const [sessionState, setSessionState] = useState("INACTIVE");
+    const [prevState, setPrevState] = useState("INACTIVE");
+    const [timerSeconds, setTimerSeconds] = useState(0);
     const [votingVisible, setVotingVisible] = useState(false);
     const [votingWord, setVotingWord] = useState(null);
     const [votingType, setVotingType] = useState(null);
 
-    const isLocked = gameState === "PAUSE" || isSubmitted;
+    // WebSocket Verbindung für Timer + Status
+    useEffect(() => {
+        const socket = new SockJS("http://localhost:8080/ws");
+        const client = new Client({
+            webSocketFactory: () => socket,
+            reconnectDelay: 5000,
+            onConnect: () => {
+                client.subscribe("/topic/session", (message) => {
+                    const data = JSON.parse(message.body);
+                    data.timerSeconds = undefined;
+                    setSessionState(data.state);
+                    setTimerSeconds(data.timerSeconds);
+                });
 
-    // ⬇️ Callback aus SpielStateDisplay → Timer + State setzen
-    const handleGameStateChange = ({ state, timeLeft }) => {
-        setGameState(state);
-        setTimeLeft(timeLeft);
+                // Initiale Session anfordern
+                client.publish({ destination: "/app/session/init" });
+            },
+        });
 
-        // Neue Runde → Felder resetten
-        if (state === "ACTIVE" && timeLeft === 60) {
+        client.activate();
+        return () => client.deactivate();
+    }, []);
+
+    // Felder nur zurücksetzen, wenn Runde NEU startet (INACTIVE → ACTIVE)
+    useEffect(() => {
+        if (prevState === "INACTIVE" && sessionState === "ACTIVE") {
             setStadt("");
             setLand("");
             setFluss("");
             setTier("");
             setIsSubmitted(false);
         }
-    };
+        setPrevState(sessionState);
+    }, [sessionState]);
 
-    // ⬇️ Wörter abschicken
+    const locked = sessionState !== "ACTIVE" || isSubmitted;
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsSubmitted(true);
-
-        const gameInput = { stadt: Stadt, land: Land, fluss: Fluss, tier: Tier };
-
         try {
-            const res = await axios.post("http://localhost:8080/api/submit", gameInput);
+            const userRes = await axios.get('http://localhost:8080/api/session/me');
+            const username = userRes.data.username;
+            if (!username) {
+                setUser(null);
+            }
+            setUser(username);
 
-            if (!res.data.exists) {
+            const benutzer = { username: username };
+            const spielnachricht = {
+                benutzer: benutzer,
+                wort: {
+                    stadt: { name: Stadt, rubrik: "Stadt" },
+                    land: { name: Land, rubrik: "Land" },
+                    fluss: { name: Fluss, rubrik: "Fluss" },
+                    tier: { name: Tier, rubrik: "Tier" }
+                }
+            };
+
+            const res = await axios.post("http://localhost:8080/api/check/wort", spielnachricht);
+
+            // Score an Parent-Komponente übergeben
+            if (res.data.score && onUpdateScore) {
+                onUpdateScore(res.data.score);
+            }
+
+            if (!res.data.stadt?.wort?.exists) {
                 setVotingWord(res.data.word);
                 setVotingType(res.data.type);
                 setVotingVisible(true);
             }
         } catch (err) {
-            console.error("Fehler beim Abschicken der Wörter:", err);
         }
     };
+
+    // Warten-Lobby, wenn Runde nicht aktiv
+    if (sessionState !== "ACTIVE") {
+        return (
+            <main className="waitingLobby">
+                <h1>Pause – nächste Runde startet in <Timer seconds={timerSeconds}/></h1>
+            </main>
+        );
+    }
 
     return (
         <main className="content">
             <div className="toolBox">
                 <div className="toolLetter">
-                    Aktueller Buchstabe: <CurrentLetter isPause={gameState === "PAUSE"} />
+                    Aktueller Buchstabe: <CurrentLetter/>
                 </div>
-
                 <div className="toolTimer">
-                    {/* WebSocket für Timer + State */}
-                    <SpielStateDisplay onStateChange={handleGameStateChange} />
-
-                    {/* Großer Countdown-Timer */}
-                    <div
-                        style={{
-                            fontSize: "2.5rem",
-                            fontWeight: "bold",
-                            marginTop: "10px",
-                            color: gameState === "ACTIVE" ? "green" : "red",
-                            textAlign: "center",
-                        }}
-                    >
-                        {gameState === "ACTIVE"
-                            ? `⏱️ ${timeLeft}s`
-                            : `⏸️ Pause: ${timeLeft}s`}
-                    </div>
+                    <Timer seconds={timerSeconds} state={sessionState}/>
                 </div>
             </div>
 
             <form className="spielfeld" onSubmit={handleSubmit}>
                 <div className="rubrik">
-                    <label>Stadt</label><br />
+                    <label>Stadt</label><br/>
                     <InputText
                         placeholder="Stadt"
                         value={Stadt}
                         onChange={(e) => setStadt(e.target.value)}
-                        disabled={isLocked}
+                        disabled={locked}
                     />
                 </div>
 
                 <div className="rubrik">
-                    <label>Land</label><br />
+                    <label>Land</label><br/>
                     <InputText
                         placeholder="Land"
                         value={Land}
                         onChange={(e) => setLand(e.target.value)}
-                        disabled={isLocked}
+                        disabled={locked}
                     />
                 </div>
 
                 <div className="rubrik">
-                    <label>Fluss</label><br />
+                    <label>Fluss</label><br/>
                     <InputText
                         placeholder="Fluss"
                         value={Fluss}
                         onChange={(e) => setFluss(e.target.value)}
-                        disabled={isLocked}
+                        disabled={locked}
                     />
                 </div>
 
                 <div className="rubrik">
-                    <label>Tier</label><br />
+                    <label>Tier</label><br/>
                     <InputText
                         placeholder="Tier"
                         value={Tier}
                         onChange={(e) => setTier(e.target.value)}
-                        disabled={isLocked}
+                        disabled={locked}
                     />
                 </div>
 
-                <button type="submit" disabled={isLocked}>
+                <button type="submit" disabled={locked}>
                     Abschicken
                 </button>
             </form>

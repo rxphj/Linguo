@@ -1,56 +1,174 @@
 package de.bund.idvk.backend.Controller.Verwaltung;
 
-import de.bund.idvk.backend.Model.DTOs.WortpruefungDTO;
+import de.bund.idvk.backend.Model.Benutzer;
+import de.bund.idvk.backend.Model.DTOs.*;
+import de.bund.idvk.backend.Model.Repository.UserRepository;
 import de.bund.idvk.backend.Model.Repository.WortRepo;
 import de.bund.idvk.backend.Model.Wort;
+import de.bund.idvk.backend.Model.Service.LetterService;
 import org.apache.commons.text.diff.EditScript;
 import org.apache.commons.text.diff.StringsComparator;
-import org.apache.commons.text.similarity.JaroWinklerDistance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @CrossOrigin
 @RequestMapping("/api")
 public class Spielverwaltung {
 
-    JaroWinklerDistance jaroWinklerDistance = new JaroWinklerDistance();
     @Autowired
-    WortRepo wortRepo;
+    private WortRepo wortRepo;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private LetterService letterService;
+
+    private List<Benutzer> registeredUsers = new ArrayList<>();
 
     @GetMapping("/generate/buchstabe")
-    public ResponseEntity<String> generateWort() {
-        char[] buchstaben = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'};
-        int rand = (int) (Math.random() * buchstaben.length);
-        return ResponseEntity.ok(String.valueOf(buchstaben[rand]));
+    public ResponseEntity<String> generateBuchstabe() {
+        char neuerBuchstabe = letterService.generateNewLetter();
+        return ResponseEntity.ok(String.valueOf(neuerBuchstabe));
     }
 
-    @GetMapping("/check/wort")
-    public ResponseEntity<WortpruefungDTO> checkWort(@RequestBody Wort wort) {
-        WortpruefungDTO wortpruefungDTO = null;
-        List<Wort> alleWorte = wortRepo.findAll();
-        for (Wort w : alleWorte) {
-            StringsComparator stringsComparator= new StringsComparator(w.getName(), wort.getName());
-            EditScript<Character>script = stringsComparator.getScript();
-            int mod= script.getModifications();
-            System.out.println(w.getName() + ": " + mod);
-            if (w.getName().equals(wort.getName())) {
-                wortpruefungDTO = new WortpruefungDTO(wort, true);
-                break;
-            }
-            if (mod <= 2) {
-                wortpruefungDTO = new WortpruefungDTO(wort, true);
-                System.out.println(wortpruefungDTO.wort().getName());
-                break;
-            }
-        }
-        if (wortpruefungDTO == null) {
-            wortpruefungDTO = new WortpruefungDTO(wort, false);
+    public void addPoints(SpielnachrichtDTO spielnachrichtDTO) {
+        if (spielnachrichtDTO == null || spielnachrichtDTO.benutzer() == null) {
+            return;
         }
 
-        return ResponseEntity.ok(wortpruefungDTO);
+        String username = spielnachrichtDTO.benutzer().getUsername();
+        System.out.println("Punkte für: " + username);
+
+        Optional<Benutzer> userOpt = registeredUsers.stream()
+                .filter(b -> b.getUsername().equals(username))
+                .findFirst();
+
+        if (userOpt.isPresent()) {
+            Benutzer benutzer = userOpt.get();
+            benutzer.setScore(benutzer.getScore() + 10);
+            System.out.println("10 Punkte für: " + username + " - Neuer Score: " + benutzer.getScore());
+        }
+    }
+
+    @PostMapping("/check/wort")
+    public ResponseEntity<WortpruefungGesamtDTO> checkWort(@RequestBody SpielnachrichtDTO spielnachricht) {
+        List<Wort> alleWorte = wortRepo.findAll();
+        char currentLetter = letterService.getCurrentLetter();
+        System.out.println("Aktueller Buchstabe: " + currentLetter);
+
+        // Benutzer registrieren
+        registerUser(spielnachricht);
+
+        if (spielnachricht.wort() == null) {
+            WortpruefungEinzelDTO empty = new WortpruefungEinzelDTO(null, false);
+            return ResponseEntity.ok(new WortpruefungGesamtDTO(empty, empty, empty, empty, 0));
+        }
+
+        WortDTO worte = spielnachricht.wort();
+
+        // Alle Wörter prüfen
+        boolean stadtExists = pruefeWort(worte.stadt(), "Stadt", alleWorte, currentLetter);
+        boolean landExists = pruefeWort(worte.land(), "Land", alleWorte, currentLetter);
+        boolean flussExists = pruefeWort(worte.fluss(), "Fluss", alleWorte, currentLetter);
+        boolean tierExists = pruefeWort(worte.tier(), "Tier", alleWorte, currentLetter);
+
+        // Punkte hinzufügen für korrekte Wörter
+        if (stadtExists) addPoints(spielnachricht);
+        if (landExists) addPoints(spielnachricht);
+        if (flussExists) addPoints(spielnachricht);
+        if (tierExists) addPoints(spielnachricht);
+
+        // Aktuellen Score holen
+        int currentScore = getCurrentScore(spielnachricht);
+
+        WortpruefungGesamtDTO gesamtResult = new WortpruefungGesamtDTO(
+                new WortpruefungEinzelDTO(worte.stadt(), stadtExists),
+                new WortpruefungEinzelDTO(worte.land(), landExists),
+                new WortpruefungEinzelDTO(worte.fluss(), flussExists),
+                new WortpruefungEinzelDTO(worte.tier(), tierExists),
+                currentScore
+        );
+
+        return ResponseEntity.ok(gesamtResult);
+    }
+
+    private boolean pruefeWort(Wort wort, String rubrik, List<Wort> alleWorte, char currentLetter) {
+        if (wort == null || wort.getName() == null || wort.getName().trim().isEmpty()) {
+            System.out.println(rubrik + ": Kein Wort angegeben");
+            return false;
+        }
+
+        String wortName = wort.getName().trim();
+        char firstChar = Character.toLowerCase(wortName.charAt(0));
+
+        // Prüfe Anfangsbuchstaben
+        if (Character.toLowerCase(currentLetter) != firstChar) {
+            System.out.println(rubrik + " '" + wortName + "' beginnt nicht mit " + currentLetter);
+            return false;
+        }
+
+        // Prüfe Existenz in der Datenbank
+        for (Wort w : alleWorte) {
+                if (w.getName().equalsIgnoreCase(wortName)) {
+                    System.out.println(rubrik + " '" + wortName + "' gefunden");
+                    return true;
+                }
+
+                // Prüfe auf Tippfehler (max. 1 Modification)
+                StringsComparator comparator = new StringsComparator(w.getName(), wortName);
+                EditScript<Character> script = comparator.getScript();
+                if (script.getModifications() <= 1) {
+                    return true;
+                }
+            }
+
+        return false;
+    }
+
+    private void registerUser(SpielnachrichtDTO spielnachricht) {
+        if (spielnachricht.benutzer() != null) {
+            String username = spielnachricht.benutzer().getUsername();
+            boolean userExists = registeredUsers.stream()
+                    .anyMatch(b -> b.getUsername().equals(username));
+
+            if (!userExists) {
+                Benutzer benutzer = userRepository.findByUsername(username);
+                if (benutzer != null) {
+                    registeredUsers.add(benutzer);
+                    System.out.println("Benutzer registriert: " + username);
+                }
+            }
+        }
+    }
+
+    private int getCurrentScore(SpielnachrichtDTO spielnachricht) {
+        if (spielnachricht.benutzer() != null) {
+            String username = spielnachricht.benutzer().getUsername();
+            Optional<Benutzer> userOpt = registeredUsers.stream()
+                    .filter(b -> b.getUsername().equals(username))
+                    .findFirst();
+
+            if (userOpt.isPresent()) {
+                return userOpt.get().getScore();
+            }
+        }
+        return 0;
+    }
+
+    @GetMapping("/registered/user")
+    public List<Benutzer> getBenutzer() {
+        return registeredUsers;
+    }
+
+    @GetMapping("/current/letter")
+    public String getCurrentLetter() {
+        return letterService.getCurrentLetterAsString();
     }
 }

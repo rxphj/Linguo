@@ -1,3 +1,6 @@
+//Komponente komplett geschrieben von Yasmin Holik
+
+
 import { Dialog } from 'primereact/dialog';
 import { useState } from 'react';
 import { InputText } from 'primereact/inputtext';
@@ -53,6 +56,7 @@ export default function AdminVerwaltung({ visible, onHide }) {
 
     // neuen User anlegen (handling)
     const handleNewUser = async () => {
+        // Alle drei Felder verlangt
         if (!newUserName || !userPassword || !userRole) return;
         try {
             await axios.post('http://localhost:8080/api/create/user', {
@@ -60,6 +64,7 @@ export default function AdminVerwaltung({ visible, onHide }) {
                 password: userPassword,
                 rolle: userRole
             });
+            // Felder zurücksetzen
             setUserName('');
             setUserPassword('');
             setUserRole('');

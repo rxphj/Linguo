@@ -1,3 +1,5 @@
+//Komponente komplett geschrieben von Yasmin Holik
+
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { InputText } from "primereact/inputtext";
@@ -8,14 +10,23 @@ import SockJS from "sockjs-client";
 import { Client } from "@stomp/stompjs";
 
 export default function Content({ onUpdateScore }) {
+    //States für Eingabefelder
     const [Stadt, setStadt] = useState("");
     const [Land, setLand] = useState("");
     const [Fluss, setFluss] = useState("");
     const [Tier, setTier] = useState("");
+
+    //Userinformationen
     const [user, setUser] = useState(null);
+
+    //Status ob schon abgeschickt
     const [isSubmitted, setIsSubmitted] = useState(false);
+    
+    //Status der Session - Aktiv oder Inaktiv
     const [sessionState, setSessionState] = useState("INACTIVE");
     const [prevState, setPrevState] = useState("INACTIVE");
+    
+    //Sekunden für den Timer
     const [timerSeconds, setTimerSeconds] = useState(0);
     const [votingVisible, setVotingVisible] = useState(false);
     const [votingWord, setVotingWord] = useState(null);
@@ -56,12 +67,15 @@ export default function Content({ onUpdateScore }) {
         setPrevState(sessionState);
     }, [sessionState]);
 
+    //Eingaben sind gesperrt wenn Session nicht aktiv oder bereits abgeschickt
     const locked = sessionState !== "ACTIVE" || isSubmitted;
 
+    //Absenden der Eingaben
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsSubmitted(true);
         try {
+            //aktuellen Benutzer vom Server holen
             const userRes = await axios.get('http://localhost:8080/api/session/me');
             const username = userRes.data.username;
             if (!username) {
@@ -69,6 +83,7 @@ export default function Content({ onUpdateScore }) {
             }
             setUser(username);
 
+            //Objekt mit Benutzer und Wörtern generieren
             const benutzer = { username: username };
             const spielnachricht = {
                 benutzer: benutzer,
@@ -80,6 +95,7 @@ export default function Content({ onUpdateScore }) {
                 }
             };
 
+            //Wörter prüfen
             const res = await axios.post("http://localhost:8080/api/check/wort", spielnachricht);
 
             // Score an Parent-Komponente übergeben
@@ -87,6 +103,7 @@ export default function Content({ onUpdateScore }) {
                 onUpdateScore(res.data.score);
             }
 
+            //Wenn Wort nicht existiert, soll sich das Votingfenster öffnen
             if (!res.data.stadt?.wort?.exists) {
                 setVotingWord(res.data.word);
                 setVotingType(res.data.type);
@@ -105,6 +122,7 @@ export default function Content({ onUpdateScore }) {
         );
     }
 
+    //Anzeige des Spielfeldes bei aktiver Runde
     return (
         <main className="content">
             <div className="toolBox">
@@ -116,6 +134,7 @@ export default function Content({ onUpdateScore }) {
                 </div>
             </div>
 
+            {/* Eingabefelder für Stadt, Land, Fluss und Tier */}
             <form className="spielfeld" onSubmit={handleSubmit}>
                 <div className="rubrik">
                     <label>Stadt</label><br/>
@@ -162,6 +181,7 @@ export default function Content({ onUpdateScore }) {
                 </button>
             </form>
 
+            {/* Voting-Dialog */}
             <Voting
                 visible={votingVisible}
                 word={votingWord}

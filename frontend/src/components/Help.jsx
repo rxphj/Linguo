@@ -10,12 +10,13 @@ export default function HelpButton() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   //Text der vorgelesen werden soll, wird auch angezeigt
-  const text = `Willkommen bei Stadt, Land, Fluss, Tier. 
-Wähle die Kategorien Stadt, Land, Fluss und Tier. 
-Fülle die Felder mit passenden Begriffen aus und klicke auf abschicken, wenn du fertig bist. 
-Jede Runde dauert sechzig Sekunden. 
-Danach gibt es eine kurze Pause von dreißig Sekunden, bevor es weitergeht. 
-Viel Spaß beim Spielen!`;
+  const text = `Willkommen bei Linguo.
+                Du bekommst einen zufälligen Buchstaben.
+                Schreibe zu Stadt, Land, Fluss und Tier passende Wörter mit diesem Buchstaben.
+                Wenn du fertig bist, klicke auf „Abschicken“.
+                Eine Runde dauert 60 Sekunden, danach gibt es 30 Sekunden Pause.
+                Jedes richtige Wort bringt dir 10 Punkte.
+                Viel Spaß!`;
 
   //Startet Sprachausgabe - Web Speech API verwendet
   const startSpeaking = () => {

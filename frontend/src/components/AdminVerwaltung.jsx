@@ -1,4 +1,4 @@
-//Komponente komplett geschrieben von Yasmin Holik
+//Komponente geschrieben von Yasmin Holik
 
 
 import { Dialog } from 'primereact/dialog';

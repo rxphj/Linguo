@@ -1,4 +1,4 @@
-//Komponente komplett geschrieben von Yasmin Holik
+//Komponente geschrieben von Yasmin Holik
 
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
@@ -21,11 +21,11 @@ export default function Content({ onUpdateScore }) {
 
     //Status ob schon abgeschickt
     const [isSubmitted, setIsSubmitted] = useState(false);
-    
+
     //Status der Session - Aktiv oder Inaktiv
     const [sessionState, setSessionState] = useState("INACTIVE");
     const [prevState, setPrevState] = useState("INACTIVE");
-    
+
     //Sekunden für den Timer
     const [timerSeconds, setTimerSeconds] = useState(0);
     const [votingVisible, setVotingVisible] = useState(false);
@@ -117,7 +117,7 @@ export default function Content({ onUpdateScore }) {
     if (sessionState !== "ACTIVE") {
         return (
             <main className="waitingLobby">
-                <h1>Pause – nächste Runde startet in <Timer seconds={timerSeconds}/></h1>
+                <h1>Pause – nächste Runde startet in <Timer seconds={timerSeconds} /></h1>
             </main>
         );
     }
@@ -127,17 +127,17 @@ export default function Content({ onUpdateScore }) {
         <main className="content">
             <div className="toolBox">
                 <div className="toolLetter">
-                    Aktueller Buchstabe: <CurrentLetter/>
+                    Aktueller Buchstabe: <CurrentLetter />
                 </div>
                 <div className="toolTimer">
-                    <Timer seconds={timerSeconds} state={sessionState}/>
+                    <Timer seconds={timerSeconds} state={sessionState} />
                 </div>
             </div>
 
             {/* Eingabefelder für Stadt, Land, Fluss und Tier */}
             <form className="spielfeld" onSubmit={handleSubmit}>
                 <div className="rubrik">
-                    <label>Stadt</label><br/>
+                    <label>Stadt</label><br />
                     <InputText
                         placeholder="Stadt"
                         value={Stadt}
@@ -147,7 +147,7 @@ export default function Content({ onUpdateScore }) {
                 </div>
 
                 <div className="rubrik">
-                    <label>Land</label><br/>
+                    <label>Land</label><br />
                     <InputText
                         placeholder="Land"
                         value={Land}
@@ -157,7 +157,7 @@ export default function Content({ onUpdateScore }) {
                 </div>
 
                 <div className="rubrik">
-                    <label>Fluss</label><br/>
+                    <label>Fluss</label><br />
                     <InputText
                         placeholder="Fluss"
                         value={Fluss}
@@ -167,7 +167,7 @@ export default function Content({ onUpdateScore }) {
                 </div>
 
                 <div className="rubrik">
-                    <label>Tier</label><br/>
+                    <label>Tier</label><br />
                     <InputText
                         placeholder="Tier"
                         value={Tier}

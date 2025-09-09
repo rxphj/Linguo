@@ -1,4 +1,4 @@
-//geschrieben von Yasmin
+//Komponente geschrieben von Yasmin Holik
 
 import React, { useState } from "react";
 import { Dialog } from "primereact/dialog";

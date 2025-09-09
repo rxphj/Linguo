@@ -1,3 +1,5 @@
+//Komponente geschrieben von Yasmin Holik
+
 import React, { useState } from 'react';
 import { Button } from 'primereact/button';
 import axios from 'axios';
@@ -8,11 +10,14 @@ import { Client } from '@stomp/stompjs';
 axios.defaults.withCredentials = true;
 
 export default function LoginPage({ onLoginSuccess }) {
+    // Eingabefelder
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    // Fehlermeldung und Ladezustand
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
+    //Websocket
     const initWebSocket = () => {
         const socket = new SockJS('http://localhost:8080/ws');
         const client = new Client({
@@ -25,6 +30,7 @@ export default function LoginPage({ onLoginSuccess }) {
         return client;
     };
 
+    // Login-Handler: Credentials senden, Response auswerten
     const handleLogin = async () => {
         setError('');
         setLoading(true);
@@ -38,14 +44,16 @@ export default function LoginPage({ onLoginSuccess }) {
 
             console.log('Login response:', res.data);
 
-            // Handle different response formats
+            // Erfolgsfall prüfen 
             if (res.data.success !== false) {
                 const userData = {
                     username: res.data.username,
                     role: res.data.role,
                     ...res.data
                 };
+                // WebSocket starten
                 initWebSocket();
+                // Callback an Parent-Komponente
                 onLoginSuccess(userData);
             } else {
                 setError(res.data.error || 'Login fehlgeschlagen');
@@ -64,17 +72,20 @@ export default function LoginPage({ onLoginSuccess }) {
         }
     };
 
+    // Enter-Taste löst Login aus
     const handleKeyPress = (e) => {
         if (e.key === 'Enter') {
             handleLogin();
         }
     };
 
+    // Render: Loginformular mit Inputs und Button 
     return (
         <div className="LoginPage" onKeyPress={handleKeyPress}>
             <div className="login-form">
                 <h1 className="login-title">Log dich zum Spielen ein!</h1>
 
+                {/* Benutzername */}
                 <input
                     placeholder="Benutzername"
                     value={username}
@@ -83,6 +94,7 @@ export default function LoginPage({ onLoginSuccess }) {
                 />
                 <br />
 
+                {/* Passwort */}
                 <input
                     placeholder="Passwort"
                     type="password"
@@ -91,13 +103,14 @@ export default function LoginPage({ onLoginSuccess }) {
                     disabled={loading}
                 />
                 <br />
-
+                {/* Login-Button */}
                 <Button
                     onClick={handleLogin}
                     disabled={loading || !username || !password}
                     label={loading ? 'Lädt...' : 'Login'}
                 />
 
+                {/* Fehlertext bei fehlgeschlagenem Login */}
                 {error && (
                     <p style={{ color: 'red', marginTop: '10px' }}>
                         {error}

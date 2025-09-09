@@ -1,13 +1,18 @@
-//geschrieben von Yasmin
+//Komponente geschrieben von Yasmin Holik
+
 import { Dialog } from "primereact/dialog"
 import { useEffect, useState } from "react";
 import axios from "axios";
 
 export function Highscore({ visible, onHide }) {
 
+    //Liste aller Highscores
     const [score, setScore] = useState([]);
+
+    //Highscore des aktuellen Spielers
     const [personalScore, setPersonalScore] = useState(null);
 
+    //Beim öffnen des Dialogfensters sollen die Highscores geladen werden
     useEffect(() => {
         if (visible) {
 
@@ -16,6 +21,7 @@ export function Highscore({ visible, onHide }) {
                 .then(res => setScore(res.data))
                 .catch(err => console.error("Fehler beim Laden der Highscore:", err));
 
+            //Persönlicher Highscore laden    
             axios.get("http://localhost:8080/api/highscore/actualuser")
                 .then(res => setPersonalScore(res.data))
                 .catch(err => console.error(err));

@@ -1,4 +1,4 @@
-// src/components/GameStateDisplay.jsx
+//Komponente geschrieben von Raphael Pohl
 
 import { useEffect, useState } from "react";
 import { Client } from "@stomp/stompjs";
@@ -10,6 +10,7 @@ import { ProgressBar } from "primereact/progressbar";
  * - onStateChange({ state, timeLeft }) → wird bei jeder Server-Nachricht ausgelöst
  */
 export default function SpielStateDisplay({ onStateChange }) {
+
     const [timeLeft, setTimeLeft] = useState(0);
     const [gameState, setGameState] = useState("PAUSE");
 

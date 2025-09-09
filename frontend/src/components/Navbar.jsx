@@ -1,11 +1,21 @@
+//geschrieben von Yasmin Holik
+
 import { Highscore } from "./Highscore";
 import { useEffect, useState } from "react";
 import SockJS from "sockjs-client";
 import { Client } from "@stomp/stompjs";
 
+
+/*Navbar Komponente stellt das Grid Element da, welches DIe aktuelle Teilnehmer und die Weiterleitung zur Highscore
+Seite anzeigen soll*/
+
 export default function Navbar() {
+
+    //State um den Highscore Dialog anzuzeigen
     const [showDialog, setShowDialog] = useState(false);
+    //State für die aktuellen Teilnehmer
     const [teilnehmer, setTeilnehmer] = useState([]);
+    //Stomp Client
     const [stompClient, setStompClient] = useState(null);
 
     // Teilnehmer holen
@@ -30,6 +40,7 @@ export default function Navbar() {
             },
         });
 
+        //Verbindung aktivieren
         client.activate();
         setStompClient(client);
 
@@ -60,6 +71,7 @@ export default function Navbar() {
                 </ul>
             </div>
 
+            {/* Highscore Icon klickbar machen*/}
             <div className="highscore">
                 <img
                     src="/highScore_img.png"

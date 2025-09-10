@@ -68,11 +68,11 @@ export default function ShowPoints({ adminAdd, score, points }) {
             {/* Adminbereich-Icon soll nur sichtbar für Admins sein */}
             <div className="adminsection">
                 {adminAdd && <img
-                    src="/AdminBurgerMenue-img.png"
-                    alt="adminsection-img"
+                    src="/AdminBurgerMenue.png"
                     className="adminsection_img"
+                    alt="/Adminsection-img.png"
                     onClick={() => setShowDialog(true)}
-                />}
+                    />}
             </div>
 
             {/* Admin-Verwaltung im Dialogfenster */}

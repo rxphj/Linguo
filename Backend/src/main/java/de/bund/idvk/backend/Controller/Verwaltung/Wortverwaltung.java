@@ -13,26 +13,25 @@ import java.util.List;
 @CrossOrigin
 @RestController
 public class Wortverwaltung {
-    @Autowired
-    WortRepo wortRepo;
+    //Repository für CRUD
+   private final WortRepo wortRepo;
+
+    public Wortverwaltung(WortRepo wortRepo) {
+        this.wortRepo = wortRepo;
+    }
+
     @PostMapping("/create/wort")
     public ResponseEntity<?>createwort(@RequestBody Wort wort){
-        return ResponseEntity.ok().body(wortRepo.createWort(wort));
+        wortRepo.createWort(wort.getName(), wort.getRubrik());
+        return ResponseEntity.ok().build();
     }
     @GetMapping("/read/woerter")
     public ResponseEntity<List<?>>readwort(){
         return ResponseEntity.ok().body(wortRepo.findAll());
     }
-    @GetMapping("/read/wort")
-    public ResponseEntity<?>readwortbyobject(@RequestBody Wort wort){
-        return ResponseEntity.ok().body(wortRepo.findByObject(wort));
-    }
+
     @DeleteMapping("/remove/wort")
     public ResponseEntity<?> removewort(@RequestBody Wort wort){
-        return ResponseEntity.ok().body(wortRepo.delete(wort));
-    }
-    @PutMapping("/update/wort")
-    public ResponseEntity<?> updatewort(@RequestBody Wort wort){
-        return ResponseEntity.ok().body(wortRepo.update(wort));
+        return ResponseEntity.ok().body(wortRepo.delete(wort.getId()));
     }
 }

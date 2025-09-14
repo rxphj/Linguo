@@ -1,18 +1,17 @@
 package de.bund.idvk.backend.Model.Repository;
 
-import de.bund.idvk.backend.Model.Benutzer;
-import de.bund.idvk.backend.Model.Enums.Rolle;
+
 import de.bund.idvk.backend.Model.Highscore;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-
-import java.sql.SQLException;
 import java.util.List;
 
 @Repository
 public class HighscoreRepository {
+    // Nicht funktional
 
+    /*TODO
+    *  Überprüfen des Highscores mit aktuellen Punkten*/
     private final JdbcTemplate jdbcTemplate;
 
     public HighscoreRepository(JdbcTemplate jdbcTemplate) {

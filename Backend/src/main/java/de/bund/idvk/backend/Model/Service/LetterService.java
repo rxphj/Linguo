@@ -6,7 +6,7 @@ import jakarta.annotation.PostConstruct;
 @Service
 public class LetterService {
     private char currentLetter;
-
+// Hier wird der aktuelle Buchstabe gespeichert und generiert
     @PostConstruct
     public void init() {
         generateNewLetter();
@@ -25,9 +25,6 @@ public class LetterService {
     }
 
 
-    public String getCurrentLetterAsString() {
-        return String.valueOf(currentLetter);
-    }
 
 
 

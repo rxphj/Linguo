@@ -4,9 +4,10 @@ import de.bund.idvk.backend.Model.Benutzer;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
-
+//Singleton
 @Service
 public class BenutzerService {
+    // Alle aktuellen Benutzer der Sitzung werden hier gespeichert
     private final List<Benutzer> registeredUsers = new ArrayList<>();
 
     public List<Benutzer> getRegistered() {
@@ -19,11 +20,4 @@ public class BenutzerService {
         }
     }
 
-    public void removeUser(Benutzer benutzer) {
-        registeredUsers.remove(benutzer);
-    }
-
-    public void clearUsers() {
-        registeredUsers.clear();
-    }
 }

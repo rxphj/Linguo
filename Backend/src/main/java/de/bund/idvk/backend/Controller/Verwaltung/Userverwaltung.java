@@ -1,6 +1,8 @@
+/**
+ AUTHOR: Raphael Pohl
+ */
 package de.bund.idvk.backend.Controller.Verwaltung;
 
-import de.bund.idvk.backend.Model.Enums.Rolle;
 import de.bund.idvk.backend.Model.Repository.UserRepository;
 import de.bund.idvk.backend.Model.Benutzer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,21 +15,17 @@ import java.util.List;
 @CrossOrigin
 @RequestMapping("/api")
 public class Userverwaltung {
-
+ //Repository
     @Autowired
     UserRepository userRepository;
     //BCrypt für die Verschlüsselung (Hashing) des Passwortes
-    BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(16);
+    BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
-//Gianluca Marotta
     @PostMapping("/create/user")
     public ResponseEntity<?>createuser(@RequestBody Benutzer benutzer){
+        // Hashing des Passwortes
         benutzer.setPassword(encoder.encode(benutzer.getPassword()));
-        if(benutzer.getRolle()==Rolle.Admin){
-            benutzer.setRolle(Rolle.Admin);
-        }else{
-            benutzer.setRolle(Rolle.Benutzer);
-        }
+        // Stringifizierung des Enums
         userRepository.createBenutzer(benutzer.getUsername(),benutzer.getPassword(), String.valueOf(benutzer.getRolle()));
         return ResponseEntity.ok().build();
     }
@@ -40,8 +38,4 @@ public class Userverwaltung {
         return ResponseEntity.ok().body(userRepository.delete((id)));
     }
 
-    @GetMapping("/read/user/by/id/{username}")
-    public ResponseEntity<Benutzer> readuserbyid(@PathVariable String username){
-        return ResponseEntity.ok().body(userRepository.findByUsername(username));
-    }
 }

@@ -7,11 +7,24 @@ import jakarta.persistence.*;
 @Entity
 @Table
 public class Wort {
+    // Definiton der Tabelle für DB
+    // SQL Statment findet man in der V1__.sql Datei
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private long id;
     private String name;
+    @Enumerated(EnumType.STRING)
     private Rubrik rubrik;
+
+    public Wort(long id, String name, Rubrik rubrik) {
+        this.id = id;
+        this.name = name;
+        this.rubrik = rubrik;
+    }
+
+    public Wort() {
+
+    }
 
     public long getId() {
         return id;

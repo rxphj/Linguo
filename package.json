@@ -6,6 +6,7 @@
     "bootstrap": "^5.3.8",
     "primeicons": "^7.0.0",
     "primereact": "^10.9.7",
+    "react": "^19.1.1",
     "react-bootstrap": "^2.10.10",
     "react-use-websocket": "^4.13.0",
     "sockjs-client": "^1.6.1"

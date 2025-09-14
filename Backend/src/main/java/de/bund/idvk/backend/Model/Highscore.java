@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 @Entity
 @Table
 public class Highscore {
+    // Nicht funktionial
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;

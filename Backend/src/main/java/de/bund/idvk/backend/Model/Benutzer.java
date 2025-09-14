@@ -11,25 +11,19 @@ import java.util.List;
 @Table
 @Entity
 
-public class Benutzer implements Serializable {
+public class Benutzer {
+    // Definiton der Tabelle für DB
+    // SQL Statment findet man in der V1__.sql Datei
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+    @Enumerated(EnumType.STRING)
     private Rolle rolle;
     private String username;
     private String password;
     private int score;
 
     public Benutzer() {
-    }
-    @Transient
-    List<Benutzer> benutzer= new ArrayList<>();
-
-    public void add(Benutzer benutzer) {
-        this.benutzer.add(benutzer);
-    }
-    public List<Benutzer> getBenutzer() {
-        return benutzer;
     }
     public Benutzer(long id, Rolle rolle, String username, String password ) {
         this.id = id;

@@ -16,7 +16,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
+@CrossOrigin
 @RequestMapping("/api/session")
 public class Sessionverwaltung {
 
@@ -28,12 +28,13 @@ public class Sessionverwaltung {
     BenutzerService benutzerService;
     private static final Map<String, Map<String, Object>> sessionStore = new ConcurrentHashMap<>();
 
-    @PostMapping("/login")
+    // Login definieren
+    @PostMapping("/login")         // Sendeobjekt definieren
     public ResponseEntity<?> login(@RequestBody Benutzer body, HttpServletResponse response) {
         Map<String, Object> result = new HashMap<>();
 
         Benutzer b = userRepository.findByUsername(body.getUsername());
-        if(b!=null){
+        if (b != null) {
             benutzerService.registerUser(body);
         }
 
@@ -44,18 +45,19 @@ public class Sessionverwaltung {
             // Session in eigenem Store speichern
             Map<String, Object> sessionData = new HashMap<>();
             sessionData.put("username", b.getUsername());
-            sessionData.put("userId", b.getId());
-            sessionData.put("role", b.getRolle());
+            sessionData.put("id", b.getId());
+            sessionData.put("rolle", b.getRolle());
             sessionStore.put(sessionId, sessionData);
-
+            // Cookie in eigenem Speicher hinzufügen
             Cookie sessionCookie = new Cookie("SESSIONID", sessionId);
             sessionCookie.setHttpOnly(true);
             sessionCookie.setMaxAge(30 * 60); // 30 Minuten
             sessionCookie.setPath("/");
             response.addCookie(sessionCookie);
 
+            // Rückgabe an das Frontend
             result.put("username", b.getUsername());
-            result.put("role", b.getRolle());
+            result.put("rolle", b.getRolle());
 
             return ResponseEntity.ok(result);
         }
@@ -64,7 +66,7 @@ public class Sessionverwaltung {
         result.put("error", "Login fehlgeschlagen");
         return ResponseEntity.status(401).body(result);
     }
-
+    // Session und Cookie Speicher abfragen
     @GetMapping("/me")
     public ResponseEntity<?> me(@CookieValue(value = "SESSIONID", required = false) String sessionId) {
         System.out.println("Received sessionId: " + sessionId);
@@ -104,11 +106,4 @@ public class Sessionverwaltung {
         return ResponseEntity.ok(Map.of("message", "Erfolgreich ausgeloggt"));
     }
 
-    @GetMapping("/debug")
-    public ResponseEntity<?> debug() {
-        return ResponseEntity.ok(Map.of(
-                "activeSessions", sessionStore.size(),
-                "sessions", sessionStore.keySet()
-        ));
-    }
 }

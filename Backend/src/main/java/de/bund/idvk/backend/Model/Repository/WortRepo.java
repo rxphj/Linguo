@@ -1,57 +1,34 @@
 package de.bund.idvk.backend.Model.Repository;
 
 import de.bund.idvk.backend.Model.Benutzer;
-import de.bund.idvk.backend.Model.Enums.Rolle;
 import de.bund.idvk.backend.Model.Enums.Rubrik;
 import de.bund.idvk.backend.Model.Wort;
+import jakarta.transaction.Transactional;
+import lombok.NonNull;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.stereotype.Repository;
-import org.springframework.jdbc.core.JdbcTemplate;
 
-import java.util.ArrayList;
 import java.util.List;
 
+@EnableJpaRepositories
 @Repository
-public class WortRepo {
-    private final JdbcTemplate jdbcTemplate;
+public interface WortRepo extends JpaRepository<Wort, Long> {
+    // Repository für CRUD-Methoden
+@Transactional
+    @Modifying
+    @Query("INSERT INTO Wort (name, rubrik) VALUES(:name, :rubrik)")
+    void createWort(String name, Rubrik rubrik);
 
-    public WortRepo(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
-    private List<Wort>woerter= new ArrayList<Wort>();
-    public Wort createWort(Wort wort){
-        String sql ="INSERT INTO WORT(name, rubrik) VALUES(?,?)";
-        jdbcTemplate.update(sql,wort.getName(),wort.getRubrik());
-        woerter.add(wort);
-        return wort;
-    }
-    public List<Wort> findAll(){
-        String sql = "SELECT id, name, rubrik FROM wort";
-        return jdbcTemplate.query(sql, (rs, rowNum) -> {
-            Wort wort = new Wort();
-            wort.setId(rs.getLong(rs.findColumn("id")));
-            wort.setName(rs.getString("name"));
-            wort.setRubrik(Rubrik.valueOf(rs.getString("rubrik")));
-            return wort;
-        });
-    }
-    public Wort findByObject(Wort wort){
-        return (Wort)woerter.stream().filter(w-> w.getId() == wort.getId());
-    }
-    public boolean delete(Wort wort){
-        String sql = "DELETE FROM Wort WHERE id= (?)";
-        jdbcTemplate.update(sql,wort.getId());
-        return woerter.remove(wort) ;
-    }
-    public Wort update(Wort wort){
-        String sql= "UPDATE Wort SET name = (?) AND rubrik=(?) WHERE id= (?)";
-        jdbcTemplate.update(sql,wort.getName(),wort.getRubrik(),wort.getId());
-        for(int i=0; i< woerter.size();i++){
-            if(woerter.get(i).getId() == wort.getId()){
-                woerter.remove(i);
-            }
-        }
-        woerter.add(wort);
-        return wort;
-    }
+    @NonNull
+    @Query("SELECT new Wort(e.id, e.name, e.rubrik) FROM Wort e")
+    List<Wort> findAllWoerter();
+
+    @Modifying
+    @Query("DELETE FROM Wort WHERE id = :id")
+    boolean delete(long id);
+
 
 }

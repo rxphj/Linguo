@@ -1,7 +1,7 @@
 package de.bund.idvk.backend.Controller.Websocket;
 
 import de.bund.idvk.backend.Model.Enums.State;
-import de.bund.idvk.backend.Model.Systempreference;
+import de.bund.idvk.backend.Model.System.Systempreference;
 import de.bund.idvk.backend.Model.Service.BenutzerService;
 import de.bund.idvk.backend.Model.Service.LetterService;
 import jakarta.annotation.PostConstruct;
@@ -29,7 +29,7 @@ public class WebSocketController {
         this.simpMessagingTemplate = simpMessagingTemplate;
 
     }
-
+    // Beim Start des Server wird einer Timer initiiert
     @PostConstruct
     public void startServerTimer() {
         Timer timer = new Timer();
@@ -41,7 +41,7 @@ public class WebSocketController {
                 if (timerSeconds <= 0) {
                     if (sessionState == State.ACTIVE) {
                         sessionState = State.INACTIVE;
-                        timerSeconds = 10; // Pause
+                        timerSeconds = 30; // Pause
                     } else {
                         sessionState = State.ACTIVE;
                         timerSeconds = 60; // Neue Runde
@@ -56,27 +56,26 @@ public class WebSocketController {
             }
         }, 0, 1000);
     }
-
+    // Übergabe des Timerstatus ans Backend
     @MessageMapping("/session/init")
     public void initSession() {
         simpMessagingTemplate.convertAndSend("/topic/session",
                 new Systempreference(sessionState.name(), timerSeconds));
     }
-
+    //Übergabe des gezogenen Buchstabe
     @MessageMapping("/session/buchstabe")
     public void getBuchstabe() {
         char currentLetter = letterService.getCurrentLetter();
         simpMessagingTemplate.convertAndSend("/topic/buchstabe",
                 String.valueOf(currentLetter).toUpperCase());
     }
-
+    //Übergabe des aktuell angemeldeten Benutzers
     @MessageMapping("/session/benutzer")
     public void showRegisteredBenutzer() {
         if (benutzerService != null && benutzerService.getRegistered() != null && !benutzerService.getRegistered().isEmpty()) {
             System.out.println(benutzerService.getRegistered().getFirst().getUsername());
             simpMessagingTemplate.convertAndSend("/topic/benutzer", benutzerService.getRegistered());
         } else {
-            System.out.println("Keine registrierten Benutzer verfügbar");
             simpMessagingTemplate.convertAndSend("/topic/benutzer", "[]"); // Leeres Array senden
         }
     }

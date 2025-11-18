@@ -96,7 +96,7 @@ export default function Content({ onUpdateScore }) {
             };
 
             //Wörter prüfen
-            const res = await axios.post("http://localhost:8080/api/check/wort", spielnachricht);
+            const res = await axios.post("http://localhost:8080/api/check/wort", spielnachricht)
 
             // Score an Parent-Komponente übergeben
             if (res.data.score && onUpdateScore) {

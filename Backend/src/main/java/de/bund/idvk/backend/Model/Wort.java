@@ -3,6 +3,8 @@ package de.bund.idvk.backend.Model;
 import de.bund.idvk.backend.Model.Enums.Rubrik;
 import jakarta.persistence.*;
 
+import java.util.Enumeration;
+
 
 @Entity
 @Table

@@ -36,26 +36,27 @@ public class WebSocketController {
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                timerSeconds--;
-
-                if (timerSeconds <= 0) {
-                    if (sessionState == State.ACTIVE) {
-                        sessionState = State.INACTIVE;
-                        timerSeconds = 30; // Pause
-                    } else {
-                        sessionState = State.ACTIVE;
-                        timerSeconds = 60; // Neue Runde
-                        char neuerBuchstabe = letterService.generateNewLetter();
-                        simpMessagingTemplate.convertAndSend("/topic/buchstabe",
-                                String.valueOf(neuerBuchstabe).toUpperCase());
+                if(!benutzerService.getRegistered().isEmpty()) {
+                    timerSeconds--;
+                    if (timerSeconds <= 0) {
+                        if (sessionState == State.ACTIVE) {
+                            sessionState = State.INACTIVE;
+                            timerSeconds = 30; // Pause
+                        } else {
+                            sessionState = State.ACTIVE;
+                            timerSeconds = 60; // Neue Runde
+                            char neuerBuchstabe = letterService.generateNewLetter();
+                            simpMessagingTemplate.convertAndSend("/topic/buchstabe",
+                                    String.valueOf(neuerBuchstabe).toUpperCase());
+                        }
                     }
                 }
-
                 simpMessagingTemplate.convertAndSend("/topic/session",
                         new Systempreference(sessionState.name(), timerSeconds));
             }
         }, 0, 1000);
     }
+
     // Übergabe des Timerstatus ans Backend
     @MessageMapping("/session/init")
     public void initSession() {

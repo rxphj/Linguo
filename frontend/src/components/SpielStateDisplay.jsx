@@ -20,7 +20,6 @@ export default function SpielStateDisplay({ onStateChange }) {
             webSocketFactory: () => socket,
             reconnectDelay: 5000,
             onConnect: () => {
-                console.log("✅ WebSocket verbunden (GameStateDisplay)");
 
                 client.subscribe("/topic/state", (message) => {
                     try {

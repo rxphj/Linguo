@@ -14,8 +14,7 @@ export default function GamePage() {
 
     // Callback-Funktion um Score von Content zu erhalten
     const handleUpdateScore = (newScore) => {
-        setScore(newScore);
-        console.log("Neuer Score:", newScore);
+        return setScore(newScore);
     };
 
     // Funktion um Punkte-Liste zu aktualisieren (falls benötigt)
@@ -29,7 +28,7 @@ export default function GamePage() {
             <Navbar bottomContent="Highscore"/>
 
             {/* Content mit Score-Callback */}
-            <Content onUpdateScore={handleUpdateScore} />
+            <Content  />
 
             {/* ShowPoints mit aktuellen Score und Punkten */}
             <ShowPoints

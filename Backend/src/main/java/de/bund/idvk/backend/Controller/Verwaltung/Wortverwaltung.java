@@ -27,7 +27,7 @@ public class Wortverwaltung {
     }
     @GetMapping("/read/woerter")
     public ResponseEntity<List<?>>readwort(){
-        return ResponseEntity.ok().body(wortRepo.findAll());
+        return ResponseEntity.ok().body(wortRepo.findAllWoerter());
     }
 
     @DeleteMapping("/remove/wort")

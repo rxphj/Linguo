@@ -5,7 +5,7 @@ import axios from "axios";
 import AdminVerwaltung from "./AdminVerwaltung.jsx";
 import SockJS from "sockjs-client";
 import { Client } from "@stomp/stompjs";
-
+import Timer from "./Timer.jsx";
 export default function ShowPoints({ adminAdd, score, points }) {
     //State um den Adminbereich sichtbar zu machen
     const [showDialog, setShowDialog] = useState(false);
@@ -13,7 +13,6 @@ export default function ShowPoints({ adminAdd, score, points }) {
     const [teilnehmer, setTeilnehmer] = useState([]);
     //Stomp
     const [stomp, setStompClient] = useState({});
-
     //Websocket Verbindung
     useEffect(() => {
         const socket = new SockJS('http://localhost:8080/ws');
@@ -39,7 +38,6 @@ export default function ShowPoints({ adminAdd, score, points }) {
 
         client.activate();
         setStompClient(client);
-
         //Verbindung aktivieren
         return () => {
             if (client) {
@@ -57,7 +55,7 @@ export default function ShowPoints({ adminAdd, score, points }) {
                     teilnehmer.map((user, index) => (
                         <li key={index} className="teilnehmer-item">
                             <span className="username">{user.username}</span>
-                            <span className="points"> {teilnehmer.score}</span>
+                            <span className="points"> {user.score}</span>
                         </li>
                     ))
                 ) : (

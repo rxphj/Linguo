@@ -1,5 +1,8 @@
 {
-  "scripts": {
-    "start" : "npm run dev"
+  "deploy" : {
+    "scripts": {
+      "start" : "npm run dev"
+    }
   }
+
 }

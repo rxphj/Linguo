@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="Gradle: org.springframework.data:spring-data-rest-webmvc:4.5.3" type="java-imported" external-system-id="GRADLE">
+    <properties groupId="org.springframework.data" artifactId="spring-data-rest-webmvc" version="4.5.3" baseVersion="4.5.3" />
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.springframework.data/spring-data-rest-webmvc/4.5.3/ff604924b7a8bc0d50c418ecfef3668597c2efae/spring-data-rest-webmvc-4.5.3.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.springframework.data/spring-data-rest-webmvc/4.5.3/2f3e483b1277aa014afb2b6164194eb40442c300/spring-data-rest-webmvc-4.5.3-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

@@ -2,6 +2,7 @@ package de.bund.idvk.backend.Controller.Verwaltung;
 
 import de.bund.idvk.backend.Model.Benutzer;
 import de.bund.idvk.backend.Model.Repository.UserRepository;
+import de.bund.idvk.backend.Model.Repository.WortRepo;
 import de.bund.idvk.backend.Model.Service.BenutzerService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
@@ -19,6 +20,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @CrossOrigin
 @RequestMapping("/api/session")
 public class Sessionverwaltung {
+
 
     @Autowired
     UserRepository userRepository;

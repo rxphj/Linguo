@@ -23,7 +23,7 @@ public class WebSocketController {
     private  BenutzerService benutzerService; // Korrekt injiziert
 
     private State sessionState = State.INACTIVE;
-    private int timerSeconds = 30;
+    private int timerSeconds = 0;
 
     public WebSocketController(SimpMessagingTemplate simpMessagingTemplate) {
         this.simpMessagingTemplate = simpMessagingTemplate;
@@ -37,11 +37,10 @@ public class WebSocketController {
             @Override
             public void run() {
                 if(!benutzerService.getRegistered().isEmpty()) {
-                    timerSeconds--;
                     if (timerSeconds <= 0) {
                         if (sessionState == State.ACTIVE) {
                             sessionState = State.INACTIVE;
-                            timerSeconds = 30; // Pause
+                            timerSeconds = 5; // Pause
                         } else {
                             sessionState = State.ACTIVE;
                             timerSeconds = 60; // Neue Runde
@@ -50,6 +49,8 @@ public class WebSocketController {
                                     String.valueOf(neuerBuchstabe).toUpperCase());
                         }
                     }
+                    timerSeconds--;
+
                 }
                 simpMessagingTemplate.convertAndSend("/topic/session",
                         new Systempreference(sessionState.name(), timerSeconds));

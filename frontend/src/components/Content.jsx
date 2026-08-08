@@ -96,19 +96,17 @@ export default function Content({ onUpdateScore }) {
             };
 
             //Wörter prüfen
-            const res = await axios.post("http://localhost:8080/api/check/wort", spielnachricht)
+            const res = await axios.post("http://localhost:8080/api/check/wort", spielnachricht).then(
+                res=>{
+                    alert(res.data.score + " Punkte!")
+                }
+            )
 
             // Score an Parent-Komponente übergeben
             if (res.data.score && onUpdateScore) {
                 onUpdateScore(res.data.score);
             }
 
-            //Wenn Wort nicht existiert, soll sich das Votingfenster öffnen
-            if (!res.data.stadt?.wort?.exists) {
-                setVotingWord(res.data.word);
-                setVotingType(res.data.type);
-                setVotingVisible(true);
-            }
         } catch (err) {
         }
     };
